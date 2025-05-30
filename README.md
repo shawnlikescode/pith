@@ -94,10 +94,10 @@ That's it. Nothing else.
 
 ### Step 2: Basic Add Form
 
-- [ ] Create an "Add Entry" screen with 4 input fields (Title, Author, Location, Note)
-- [ ] Add a "Save" button
-- [ ] For now, just console.log the data when Save is pressed
-- [ ] Test on phone
+- [x] Create an "Add Entry" screen with 5 input fields (Title, Author, Location, Passage, Note)
+- [x] Add a "Save" button
+- [x] For now, just console.log the data when Save is pressed
+- [x] Test on phone
 
 ### Step 3: Local Storage
 
