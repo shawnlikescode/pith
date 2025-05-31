@@ -16,10 +16,18 @@ export default function IndexScreen() {
 					</Text>
 				</View>
 
-				<View className="space-y-4">
+				<View className="mb-4">
 					<Link href="/add-entry" asChild>
 						<Button className="bg-primary">
 							<Text className="text-primary-foreground">Add New Entry</Text>
+						</Button>
+					</Link>
+				</View>
+
+				<View className="mb-4">
+					<Link href="/debug" asChild>
+						<Button className="bg-primary">
+							<Text className="text-primary-foreground">Debug</Text>
 						</Button>
 					</Link>
 				</View>

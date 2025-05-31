@@ -101,9 +101,9 @@ That's it. Nothing else.
 
 ### Step 3: Local Storage
 
-- [ ] Research local storage options (AsyncStorage)
-- [ ] Make the Save button actually store the entry locally
-- [ ] Test that data persists when you close/reopen the app
+- [x] Research local storage options (AsyncStorage)
+- [x] Make the Save button actually store the entry locally
+- [x] Test that data persists when you close/reopen the app
 
 ### Step 4: View Entries
 

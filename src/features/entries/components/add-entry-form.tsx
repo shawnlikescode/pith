@@ -15,6 +15,8 @@ import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { cn } from "~/lib/utils";
 import { useKeyboard } from "~/lib/hooks/keyboard";
+import { useBooks } from "../hooks/use-books";
+import { useEntries } from "../hooks/use-entries";
 
 interface AddEntryFormData {
 	bookTitle: string;
@@ -26,6 +28,8 @@ interface AddEntryFormData {
 
 export const AddEntryForm: React.FC = () => {
 	const { isKeyboardVisible, keyboardHeight, dismissKeyboard } = useKeyboard();
+	const { findOrCreateBook } = useBooks();
+	const { saveEntry } = useEntries();
 
 	console.log({ isKeyboardVisible, keyboardHeight });
 
@@ -56,7 +60,27 @@ export const AddEntryForm: React.FC = () => {
 					return;
 				}
 
-				console.log(value);
+				console.log("Saving entry:", value);
+
+				// Find or create the book
+				const book = await findOrCreateBook(
+					value.bookTitle.trim(),
+					value.author.trim()
+				);
+
+				// Save the entry
+				const entry = await saveEntry({
+					bookId: book.id,
+					location: value.location.trim(),
+					passage: value.passage.trim(),
+					note: value.note.trim(),
+				});
+
+				console.log("Entry saved successfully:", entry);
+
+				Alert.alert("Success", "Your thought has been saved successfully!", [
+					{ text: "OK" },
+				]);
 
 				// Reset form
 				form.reset();
