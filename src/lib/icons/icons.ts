@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react-native";
 import { cssInterop } from "nativewind";
-import { Sun, MoonStar } from "lucide-react-native";
+import { Sun, MoonStar, LoaderCircle, ChevronRight } from "lucide-react-native";
 
 function iconWithClassName(icon: LucideIcon) {
 	cssInterop(icon, {
@@ -16,5 +16,7 @@ function iconWithClassName(icon: LucideIcon) {
 
 iconWithClassName(Sun);
 iconWithClassName(MoonStar);
+iconWithClassName(LoaderCircle);
+iconWithClassName(ChevronRight);
 
-export { Sun, MoonStar };
+export { Sun, MoonStar, LoaderCircle, ChevronRight };

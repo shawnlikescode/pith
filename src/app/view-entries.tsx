@@ -4,21 +4,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { RecentEntries } from "~/features/entries/components/recent-entries";
+import { EntriesList } from "~/features/entries/components/entries-list";
 import "~/global.css";
 
-export default function IndexScreen() {
+export default function ViewEntriesScreen() {
 	return (
 		<SafeAreaView className="flex-1 bg-white">
 			<ScrollView className="flex-1">
-				<View className="pl-4 pr-4 pt-6 pb-6">
-					<View className="mb-6">
-						<Text className="text-3xl font-bold text-gray-800 mb-2">Pith</Text>
-						<Text className="text-gray-600">
-							Save and organize your book insights
-						</Text>
-					</View>
-
+				<View className="pl-4 pr-4 pt-4 pb-6">
 					<View className="mb-6">
 						<Link href="/add-entry" asChild>
 							<Button className="bg-primary">
@@ -28,7 +21,7 @@ export default function IndexScreen() {
 					</View>
 				</View>
 
-				<RecentEntries />
+				<EntriesList showHeader={true} />
 			</ScrollView>
 		</SafeAreaView>
 	);

@@ -107,10 +107,10 @@ That's it. Nothing else.
 
 ### Step 4: View Entries
 
-- [ ] Create a "View Entries" screen
-- [ ] Load all saved entries from storage
-- [ ] Display them in a simple list (just title and first few words of note)
-- [ ] Add navigation between Add and View screens
+- [x] Create a "View Entries" screen
+- [x] Load all saved entries from storage
+- [x] Display them in a list (just title and first few words of note)
+- [x] Add Add entry from View screens
 
 ### Step 5: Search
 
@@ -128,7 +128,7 @@ That's it. Nothing else.
 
 - [ ] Use the app to log 3-5 real book notes
 - [ ] Confirm it works as intended
-- [ ] Celebrate first completed project! 🎉
+- [ ] Celebrate completed project! 🎉
 
 **CURRENT FOCUS:** Step 2 - Basic Add Form
 **NEXT STEP:** Create an "Add Entry" screen with 4 input fields
