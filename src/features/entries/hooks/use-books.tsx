@@ -4,10 +4,6 @@ import "react-native-get-random-values";
 import { nanoid } from "nanoid";
 
 export const useBooks = () => {
-	const generateId = () => {
-		return nanoid();
-	};
-
 	const getBooks = async (): Promise<Book[]> => {
 		try {
 			const booksJson = await AsyncStorage.getItem("books");
@@ -25,7 +21,6 @@ export const useBooks = () => {
 		try {
 			const books = await getBooks();
 
-			// Look for existing book with same title and author
 			const existingBook = books.find(
 				(book) =>
 					book.title.toLowerCase() === title.toLowerCase() &&
@@ -36,15 +31,13 @@ export const useBooks = () => {
 				return existingBook;
 			}
 
-			// Create new book
 			const newBook: Book = {
-				id: generateId(),
+				id: nanoid(),
 				title,
 				author,
 				createdAt: new Date().toISOString(),
 			};
 
-			// Save updated books list
 			const updatedBooks = [...books, newBook];
 			await AsyncStorage.setItem("books", JSON.stringify(updatedBooks));
 

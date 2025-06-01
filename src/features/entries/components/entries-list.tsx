@@ -1,142 +1,120 @@
-import React, { useEffect, useState } from "react";
-import { View } from "react-native";
-import { useEntries } from "../hooks/use-entries";
-import { useBooks } from "../hooks/use-books";
-import { Entry, Book } from "../types";
-import { Card, CardContent } from "~/components/ui/card";
+import React from "react";
+import { View, FlatList } from "react-native";
+import { useFilteredEntries } from "../hooks/use-filtered-entries";
+import { EntryCard } from "./entry-card";
+import { EntryWithBook } from "../hooks/use-entries-with-books";
 import { Text } from "~/components/ui/text";
-
-type EntryWithBook = Entry & {
-	book?: Book;
-};
+import { cn } from "~/lib/utils";
 
 interface EntriesListProps {
 	limit?: number;
 	showHeader?: boolean;
+	searchQuery?: string;
 }
 
-export const EntriesList = ({ limit, showHeader = true }: EntriesListProps) => {
-	const [entries, setEntries] = useState<EntryWithBook[]>([]);
-	const [loading, setLoading] = useState(true);
-	const { getEntries } = useEntries();
-	const { getBooks } = useBooks();
+export const EntriesList = ({
+	limit,
+	showHeader = true,
+	searchQuery = "",
+}: EntriesListProps) => {
+	const { entries, filteredEntries, displayedEntries, loading, error } =
+		useFilteredEntries({
+			searchQuery,
+			limit,
+		});
 
-	const loadEntries = async () => {
-		try {
-			const [entriesData, booksData] = await Promise.all([
-				getEntries(),
-				getBooks(),
-			]);
+	const renderEntry = ({ item }: { item: EntryWithBook }) => (
+		<EntryCard entry={item} />
+	);
 
-			// Combine entries with their book information
-			const entriesWithBooks = entriesData.map((entry) => {
-				const book = booksData.find((b) => b.id === entry.bookId);
-				return { ...entry, book };
-			});
-
-			// Sort by creation date (newest first)
-			entriesWithBooks.sort(
-				(a, b) =>
-					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+	const renderEmptyState = () => {
+		if (loading) {
+			return (
+				<View className="justify-center items-center p-4">
+					<Text className="text-gray-600">Loading entries...</Text>
+				</View>
 			);
-
-			// Apply limit if specified
-			const limitedEntries = limit
-				? entriesWithBooks.slice(0, limit)
-				: entriesWithBooks;
-
-			setEntries(limitedEntries);
-		} catch (error) {
-			console.error("Error loading entries:", error);
-		} finally {
-			setLoading(false);
 		}
+
+		if (error) {
+			return (
+				<View className="justify-center items-center p-4">
+					<Text className="text-red-600">Error loading entries: {error}</Text>
+				</View>
+			);
+		}
+
+		if (entries.length === 0) {
+			return (
+				<View className="justify-center items-center p-4">
+					<Text className="text-xl font-semibold text-gray-800 mb-2">
+						No entries yet
+					</Text>
+					<Text className="text-gray-600 text-center">
+						Start adding your first book note to see it here!
+					</Text>
+				</View>
+			);
+		}
+
+		if (filteredEntries.length === 0 && searchQuery.trim()) {
+			return (
+				<View className="justify-center items-center p-4">
+					<Text className="text-xl font-semibold text-gray-800 mb-2">
+						No results found
+					</Text>
+					<Text className="text-gray-600 text-center">
+						No entries match "{searchQuery}". Try a different search term.
+					</Text>
+				</View>
+			);
+		}
+
+		return null;
 	};
 
-	useEffect(() => {
-		loadEntries();
-	}, [limit]);
-
-	const truncateText = (text: string, maxLength: number = 100) => {
-		if (text.length <= maxLength) return text;
-		return text.substring(0, maxLength) + "...";
-	};
-
-	const formatDate = (dateString: string) => {
-		const date = new Date(dateString);
-		return date.toLocaleDateString();
-	};
-
-	if (loading) {
-		return (
-			<View className="justify-center items-center p-4">
-				<Text className="text-gray-600">Loading entries...</Text>
-			</View>
-		);
-	}
-
-	if (entries.length === 0) {
-		return (
-			<View className="justify-center items-center p-4">
-				<Text className="text-xl font-semibold text-gray-800 mb-2">
-					No entries yet
-				</Text>
-				<Text className="text-gray-600 text-center">
-					Start adding your first book note to see it here!
-				</Text>
-			</View>
-		);
+	// Handle empty states
+	if (
+		loading ||
+		error ||
+		entries.length === 0 ||
+		(filteredEntries.length === 0 && searchQuery.trim())
+	) {
+		return renderEmptyState();
 	}
 
 	return (
-		<View className="pl-4 pr-4 pb-6">
+		<View className={cn(showHeader && "flex-1")}>
 			{showHeader && (
-				<View className="mb-4">
+				<View className="mb-4 px-4">
 					<Text className="text-2xl font-bold text-gray-800 mb-1">
 						Your Entries
 					</Text>
 					<Text className="text-gray-600">
-						{entries.length} {entries.length === 1 ? "entry" : "entries"}
+						{searchQuery?.trim()
+							? `${displayedEntries.length} of ${entries.length} ${
+									entries.length === 1 ? "entry" : "entries"
+							  }`
+							: `${displayedEntries.length} ${
+									displayedEntries.length === 1 ? "entry" : "entries"
+							  }`}
 						{limit && " (recent)"}
 					</Text>
 				</View>
 			)}
 
-			<View>
-				{entries.map((entry) => (
-					<Card key={entry.id} className="w-full mb-4">
-						<CardContent className="p-4">
-							<View className="mb-2">
-								<Text className="text-lg font-semibold text-gray-800">
-									{entry.book?.title || "Unknown Book"}
-								</Text>
-								<Text className="text-sm text-gray-600">
-									by {entry.book?.author || "Unknown Author"} • Location:{" "}
-									{entry.location}
-								</Text>
-							</View>
-
-							{entry.passage && (
-								<View className="mb-2 p-2 bg-gray-50 rounded border-l-2 border-gray-300">
-									<Text className="text-sm text-gray-700 italic">
-										"{truncateText(entry.passage, 120)}"
-									</Text>
-								</View>
-							)}
-
-							<View className="mb-2">
-								<Text className="text-sm text-gray-800">
-									{truncateText(entry.note, 150)}
-								</Text>
-							</View>
-
-							<Text className="text-xs text-gray-500">
-								{formatDate(entry.createdAt)}
-							</Text>
-						</CardContent>
-					</Card>
-				))}
-			</View>
+			{/* Scrollable list */}
+			<FlatList
+				data={displayedEntries}
+				renderItem={renderEntry}
+				keyExtractor={(item) => item.id}
+				contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 24 }}
+				showsVerticalScrollIndicator={false}
+				removeClippedSubviews={true}
+				maxToRenderPerBatch={10}
+				windowSize={10}
+				scrollEnabled={!limit} // Disable scrolling for recent entries (limited lists)
+			/>
 		</View>
 	);
 };

@@ -1,11 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entry } from "../types";
+import { nanoid } from "nanoid";
 
 export const useEntries = () => {
-	const generateId = () => {
-		return Date.now().toString() + Math.random().toString(36).substr(2, 9);
-	};
-
 	const getEntries = async (): Promise<Entry[]> => {
 		try {
 			const entriesJson = await AsyncStorage.getItem("entries");
@@ -24,7 +21,7 @@ export const useEntries = () => {
 
 			const newEntry: Entry = {
 				...entryData,
-				id: generateId(),
+				id: nanoid(),
 				createdAt: new Date().toISOString(),
 			};
 

@@ -114,9 +114,9 @@ That's it. Nothing else.
 
 ### Step 5: Search
 
-- [ ] Add a search bar to the View screen
-- [ ] Filter the displayed entries based on search text
-- [ ] Test that it searches across all fields
+- [x] Add a search bar to the View screen
+- [x] Filter the displayed entries based on search text
+- [x] Test that it searches across all fields
 
 ### Step 6: Polish
 
@@ -130,7 +130,6 @@ That's it. Nothing else.
 - [ ] Confirm it works as intended
 - [ ] Celebrate completed project! 🎉
 
-**CURRENT FOCUS:** Step 2 - Basic Add Form
-**NEXT STEP:** Create an "Add Entry" screen with 4 input fields
+**CURRENT FOCUS:** Step 6 - Polish
 
 ---
