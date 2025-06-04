@@ -1,0 +1,42 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { nanoid } from "nanoid";
+import type { Insight } from "../types";
+
+export function useInsights() {
+	const getInsights = async (): Promise<Insight[]> => {
+		try {
+			const insightsJson = await AsyncStorage.getItem("insights");
+			return insightsJson ? JSON.parse(insightsJson) : [];
+		} catch (error) {
+			console.error("Error getting insights:", error);
+			return [];
+		}
+	};
+
+	const saveEntry = async (
+		entryData: Omit<Insight, "id" | "createdAt">
+	): Promise<Insight> => {
+		try {
+			const insights = await getInsights();
+
+			const newEntry: Insight = {
+				...entryData,
+				id: nanoid(),
+				createdAt: new Date().toISOString(),
+			};
+
+			const updatedInsights = [...insights, newEntry];
+			await AsyncStorage.setItem("insights", JSON.stringify(updatedInsights));
+
+			return newEntry;
+		} catch (error) {
+			console.error("Error saving entry:", error);
+			throw error;
+		}
+	};
+
+	return {
+		getInsights,
+		saveEntry,
+	};
+}

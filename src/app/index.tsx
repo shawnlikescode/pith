@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Link } from "expo-router";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { RecentEntries } from "~/features/entries/components/recent-entries";
+import RecentInsights from "~/features/insights/components/recent-insights";
 import "~/global.css";
 
 export default function IndexScreen() {
@@ -26,10 +26,10 @@ export default function IndexScreen() {
 					</Text>
 				</View>
 				<View className="flex-1">
-					<RecentEntries />
+					<RecentInsights />
 				</View>
 				<View className="pb-6">
-					<Link href="/add-entry" asChild>
+					<Link href="/add-insight" asChild>
 						<Button className="bg-primary">
 							<Text className="text-primary-foreground">Add New Entry</Text>
 						</Button>

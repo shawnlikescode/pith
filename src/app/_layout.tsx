@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -12,7 +11,7 @@ export default function RootLayout() {
 	}, []);
 
 	return (
-		<React.Fragment>
+		<>
 			<StatusBar style="auto" />
 			<Stack>
 				<Stack.Screen
@@ -23,17 +22,17 @@ export default function RootLayout() {
 					}}
 				/>
 				<Stack.Screen
-					name="add-entry"
+					name="add-insight"
 					options={{
-						title: "Add Entry",
+						title: "Add Insight",
 						headerBackTitle: "Back",
 						presentation: "modal",
 					}}
 				/>
 				<Stack.Screen
-					name="view-entries"
+					name="view-insights"
 					options={{
-						title: "All Entries",
+						title: "All Insights",
 						headerBackTitle: "Back",
 					}}
 				/>
@@ -45,6 +44,6 @@ export default function RootLayout() {
 					}}
 				/>
 			</Stack>
-		</React.Fragment>
+		</>
 	);
 }

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import { View, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useBooks } from "../hooks/use-books";
-import { useEntries } from "../hooks/use-entries";
-import { Book, Entry } from "../types";
+import { Text } from "~/components/ui/text";
+import { useBooks } from "../insights/hooks/use-books";
+import { useInsights } from "../insights/hooks/use-insights";
+import type { Book, Insight } from "../insights/types";
+import { Button } from "~/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -11,25 +13,24 @@ import {
 	CardHeader,
 	CardTitle,
 } from "~/components/ui/card";
-import { Text } from "~/components/ui/text";
 
-export const DebugDataViewer: React.FC = () => {
+export default function DebugDataViewer() {
 	const [books, setBooks] = useState<Book[]>([]);
-	const [entries, setEntries] = useState<Entry[]>([]);
+	const [insights, setInsights] = useState<Insight[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [lastLoaded, setLastLoaded] = useState<Date | null>(null);
 	const { getBooks } = useBooks();
-	const { getEntries } = useEntries();
+	const { getInsights } = useInsights();
 
 	const loadData = async () => {
 		setIsLoading(true);
 		try {
-			const [booksData, entriesData] = await Promise.all([
+			const [booksData, insightsData] = await Promise.all([
 				getBooks(),
-				getEntries(),
+				getInsights(),
 			]);
 			setBooks(booksData);
-			setEntries(entriesData);
+			setInsights(insightsData);
 			setLastLoaded(new Date());
 		} catch (error) {
 			console.error("Error loading data:", error);
@@ -41,20 +42,25 @@ export const DebugDataViewer: React.FC = () => {
 	const logRawAsyncStorageData = async () => {
 		try {
 			const booksRaw = await AsyncStorage.getItem("books");
-			const entriesRaw = await AsyncStorage.getItem("entries");
+			const insightsRaw = await AsyncStorage.getItem("insights");
 
 			console.log("=== RAW ASYNCSTORAGE DATA ===");
 			console.log("Books raw:", booksRaw);
-			console.log("Entries raw:", entriesRaw);
+			console.log("Insights raw:", insightsRaw);
 			console.log("Books parsed:", booksRaw ? JSON.parse(booksRaw) : null);
 			console.log(
-				"Entries parsed:",
-				entriesRaw ? JSON.parse(entriesRaw) : null
+				"Insights parsed:",
+				insightsRaw ? JSON.parse(insightsRaw) : null
 			);
 			console.log("=== END RAW DATA ===");
 		} catch (error) {
 			console.error("Error reading raw AsyncStorage:", error);
 		}
+	};
+
+	const clearAsyncStorage = async () => {
+		await AsyncStorage.clear();
+		loadData();
 	};
 
 	useEffect(() => {
@@ -71,14 +77,20 @@ export const DebugDataViewer: React.FC = () => {
 					</Text>
 				)}
 				<View className="mb-4">
-					<TouchableOpacity
+					<Button
 						onPress={logRawAsyncStorageData}
 						className="bg-green-500 p-2 rounded"
 					>
 						<Text className="text-white text-center">
 							Log Raw AsyncStorage Data
 						</Text>
-					</TouchableOpacity>
+					</Button>
+					<Button
+						onPress={clearAsyncStorage}
+						className="bg-red-500 p-2 rounded"
+					>
+						<Text className="text-white text-center">Clear AsyncStorage</Text>
+					</Button>
 				</View>
 			</View>
 
@@ -118,14 +130,14 @@ export const DebugDataViewer: React.FC = () => {
 
 					<View>
 						<Text className="text-xl font-semibold mb-3">
-							Entries ({entries.length})
+							Insights ({insights.length})
 						</Text>
-						{entries.length === 0 ? (
+						{insights.length === 0 ? (
 							<Text className="text-muted-foreground italic">
-								No entries saved yet
+								No insights saved yet
 							</Text>
 						) : (
-							entries.map((entry) => {
+							insights.map((entry) => {
 								const book = books.find((b) => b.id === entry.bookId);
 								return (
 									<Card key={entry.id} className="mb-3">
@@ -161,4 +173,4 @@ export const DebugDataViewer: React.FC = () => {
 			)}
 		</ScrollView>
 	);
-};
+}

@@ -1,6 +1,22 @@
-import type { LucideIcon } from "lucide-react-native";
 import { cssInterop } from "nativewind";
-import { Sun, MoonStar, LoaderCircle, ChevronRight } from "lucide-react-native";
+import {
+	type LucideIcon,
+	Sun,
+	MoonStar,
+	LoaderCircle,
+	ChevronRight,
+	Book,
+	BookOpen,
+	MessageSquare,
+	Calendar,
+	CircleHelp,
+	Quote,
+	Lightbulb,
+	User,
+	Hash,
+	Plus,
+	X,
+} from "lucide-react-native";
 
 function iconWithClassName(icon: LucideIcon) {
 	cssInterop(icon, {
@@ -18,5 +34,33 @@ iconWithClassName(Sun);
 iconWithClassName(MoonStar);
 iconWithClassName(LoaderCircle);
 iconWithClassName(ChevronRight);
+iconWithClassName(Book);
+iconWithClassName(BookOpen);
+iconWithClassName(MessageSquare);
+iconWithClassName(Calendar);
+iconWithClassName(CircleHelp);
+iconWithClassName(Quote);
+iconWithClassName(Lightbulb);
+iconWithClassName(User);
+iconWithClassName(Hash);
+iconWithClassName(Plus);
+iconWithClassName(X);
 
-export { Sun, MoonStar, LoaderCircle, ChevronRight };
+export {
+	type LucideIcon,
+	Sun,
+	MoonStar,
+	LoaderCircle,
+	ChevronRight,
+	Book,
+	BookOpen,
+	MessageSquare,
+	Calendar,
+	CircleHelp,
+	Quote,
+	Lightbulb,
+	User,
+	Hash,
+	Plus,
+	X,
+};

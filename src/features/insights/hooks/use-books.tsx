@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Book } from "../types";
-import "react-native-get-random-values";
 import { nanoid } from "nanoid";
+import type { Book } from "../types";
+import "react-native-get-random-values";
 
-export const useBooks = () => {
+export function useBooks() {
 	const getBooks = async (): Promise<Book[]> => {
 		try {
 			const booksJson = await AsyncStorage.getItem("books");
@@ -52,4 +52,4 @@ export const useBooks = () => {
 		getBooks,
 		findOrCreateBook,
 	};
-};
+}

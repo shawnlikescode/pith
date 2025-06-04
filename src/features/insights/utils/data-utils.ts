@@ -1,22 +1,24 @@
-import { EntryWithBook } from "../hooks/use-entries-with-books";
+import type { InsightWithBook } from "../types";
 
-export const filterEntriesByQuery = (
-	entries: EntryWithBook[],
+export const filterInsightsByQuery = (
+	insights: InsightWithBook[],
 	searchQuery: string
-): EntryWithBook[] => {
+): In[] => {
 	if (!searchQuery || !searchQuery.trim()) {
-		return entries;
+		return insights;
 	}
 
 	const lowercaseQuery = searchQuery.toLowerCase().trim();
 
-	return entries.filter((entry) => {
+	return insights.filter((entry) => {
 		const searchableContent = [
 			entry.book?.title || "",
 			entry.book?.author || "",
 			entry.location,
-			entry.passage,
+			entry.excerpt,
 			entry.note,
+			...entry.tags,
+			entry.category,
 		]
 			.join(" ")
 			.toLowerCase();
@@ -25,11 +27,11 @@ export const filterEntriesByQuery = (
 	});
 };
 
-export const limitEntries = (
-	entries: EntryWithBook[],
+export const limitInsights = (
+	insights: InsightWithBook[],
 	limit?: number
-): EntryWithBook[] => {
-	return limit ? entries.slice(0, limit) : entries;
+): InsightWithBook[] => {
+	return limit ? insights.slice(0, limit) : insights;
 };
 
 export const formatDate = (dateString: string): string => {
