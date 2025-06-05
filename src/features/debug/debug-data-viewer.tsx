@@ -151,12 +151,18 @@ export default function DebugDataViewer() {
 											</CardDescription>
 										</CardHeader>
 										<CardContent className="pt-0">
-											<Text className="text-sm mb-2 italic">
-												"{entry.passage}"
-											</Text>
-											<Text className="text-sm text-card-foreground mb-2">
-												{entry.note}
-											</Text>
+											{entry.category === "quote" &&
+												"excerpt" in entry &&
+												entry.excerpt && (
+													<Text className="text-sm mb-2 italic">
+														"{entry.excerpt}"
+													</Text>
+												)}
+											{"note" in entry && entry.note && (
+												<Text className="text-sm text-card-foreground mb-2">
+													{entry.note}
+												</Text>
+											)}
 											<Text className="text-xs text-muted-foreground">
 												ID: {entry.id}
 											</Text>

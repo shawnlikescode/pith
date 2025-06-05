@@ -14,21 +14,21 @@ export function useInsights() {
 	};
 
 	const saveEntry = async (
-		entryData: Omit<Insight, "id" | "createdAt">
+		insightData: Omit<Insight, "id" | "createdAt">
 	): Promise<Insight> => {
 		try {
 			const insights = await getInsights();
 
-			const newEntry: Insight = {
-				...entryData,
+			const newInsight: Insight = {
+				...insightData,
 				id: nanoid(),
 				createdAt: new Date().toISOString(),
-			};
+			} as Insight; // Type assertion needed for discriminated union
 
-			const updatedInsights = [...insights, newEntry];
+			const updatedInsights = [...insights, newInsight];
 			await AsyncStorage.setItem("insights", JSON.stringify(updatedInsights));
 
-			return newEntry;
+			return newInsight;
 		} catch (error) {
 			console.error("Error saving entry:", error);
 			throw error;

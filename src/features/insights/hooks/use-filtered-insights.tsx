@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useInsightsWithBooks } from "./use-insights-with-books";
 import { filterInsightsByQuery, limitInsights } from "../utils/data-utils";
-import type { EntryWithBook } from "../types";
+import type { InsightWithBook } from "../types";
 
 interface UseFilteredInsightsProps {
 	searchQuery?: string;
@@ -9,9 +9,9 @@ interface UseFilteredInsightsProps {
 }
 
 interface UseFilteredInsightsResult {
-	insights: EntryWithBook[];
-	filteredInsights: EntryWithBook[];
-	displayedInsights: EntryWithBook[];
+	insights: InsightWithBook[];
+	filteredInsights: InsightWithBook[];
+	displayedInsights: InsightWithBook[];
 	loading: boolean;
 	error: string | null;
 	refetch: () => Promise<void>;

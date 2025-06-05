@@ -19,26 +19,38 @@ type Tag =
 
 type FlexibleTag = Tag | (string & {});
 
-export interface Insight {
+// Base insight interface with common properties
+interface BaseInsight {
 	id: string;
 	bookId: string;
 	location: string; // page number, chapter, etc.
-	excerpt?: string; // the actual text passage
-	note?: string; // user's thoughts/notes
-	category: FlexibleCategory;
 	tags: FlexibleTag[];
 	createdAt: string;
 }
 
-export interface InsightWithBook extends Insight {
-	book: Book;
+// Quote insights use excerpts (the actual quoted text)
+interface QuoteInsight extends BaseInsight {
+	category: "quote";
+	excerpt: string; // Required for quotes
+	note?: string; // Optional additional thoughts about the quote
 }
+
+// User-generated insights use notes
+interface UserInsight extends BaseInsight {
+	category: "thought" | "question" | "idea";
+	note: string; // Required for user thoughts/questions/ideas
+	excerpt?: string; // Optional if referencing specific text
+}
+
+// Discriminated union of insight types
+export type Insight = QuoteInsight | UserInsight;
+
+export type InsightWithBook = Insight & {
+	book: Book;
+};
 
 export interface BookWithInsights extends Book {
 	insights: Insight[];
 }
 
-// Export aliases for backward compatibility
-export type Entry = Insight;
-export type EntryWithBook = InsightWithBook;
 export type { FlexibleCategory, FlexibleTag };

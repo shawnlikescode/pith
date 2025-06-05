@@ -60,12 +60,21 @@ export default function AddEntryForm() {
 						</View>
 
 						{/* Your Insight */}
-						<form.AppField
-							name="insight"
-							children={(field) => (
-								<field.TextareaField
-									label="Your Insight"
-									placeholder="What insight or thought do you want to capture?"
+						<form.Subscribe
+							selector={(state) => state.values.insightType}
+							children={(insightType) => (
+								<form.AppField
+									name="insight"
+									children={(field) => (
+										<field.TextareaField
+											label={insightType === "quote" ? "Quote" : "Your Insight"}
+											placeholder={
+												insightType === "quote"
+													? "What excerpt from the source do you want to capture?"
+													: "What insight or thought do you want to capture?"
+											}
+										/>
+									)}
 								/>
 							)}
 						/>

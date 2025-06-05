@@ -3,7 +3,7 @@ import type { InsightWithBook } from "../types";
 export const filterInsightsByQuery = (
 	insights: InsightWithBook[],
 	searchQuery: string
-): In[] => {
+): InsightWithBook[] => {
 	if (!searchQuery || !searchQuery.trim()) {
 		return insights;
 	}
