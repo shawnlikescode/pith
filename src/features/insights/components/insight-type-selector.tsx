@@ -74,17 +74,20 @@ function InsightTypeButton({
 		<Button
 			onPress={onPress}
 			className={cn(
-				"flex-row items-center justify-center px-4 py-3 rounded-lg border-2 flex-1",
-				isSelected ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white"
+				"flex-1 flex-row items-center justify-center rounded-lg border gap-2 pt-3 pb-3",
+				isSelected ? "border-blue-500 bg-blue-100" : "border-0 bg-white"
 			)}
 		>
 			<Icon
-				size={18}
-				className={cn("mr-2", isSelected ? "text-blue-700" : "text-gray-500")}
+				size={16}
+				className={cn(
+					"flex-shrink-0",
+					isSelected ? "text-blue-700" : "text-gray-500"
+				)}
 			/>
 			<Text
 				className={cn(
-					"text-base font-medium",
+					"text-base font-medium leading-none",
 					isSelected ? "text-blue-700" : "text-gray-700"
 				)}
 			>
