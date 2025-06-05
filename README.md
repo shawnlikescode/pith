@@ -67,9 +67,10 @@ src/
 
 This is very much a work in progress. Right now it's just the basic setup. Still need to build:
 
-- [ ] The actual note-taking interface
-- [ ] Search functionality
-- [ ] Local storage
+- [x] The actual note-taking interface
+- [x] Search functionality
+- [x] Local storage
+- [ ] Polish
 
 ## TODO - Complete Project Plan
 
@@ -77,10 +78,10 @@ This is very much a work in progress. Right now it's just the basic setup. Still
 
 **THE FEATURES (ONLY THESE):**
 
-- Add Entry Screen: Form with Book Title, Author, Page/Location, and Note text area
-- View Entries Screen: List of all saved entries
+- Add Insight Screen: Form with Book Title, Author, Page/Location, and Note text area
+- View Insights Screen: List of all saved insights
 - Basic Search: Filter the list by typing keywords
-- Local Storage: Entries save on phone, no internet needed
+- Local Storage: Insights save on phone, no internet needed
 
 That's it. Nothing else.
 
@@ -94,7 +95,7 @@ That's it. Nothing else.
 
 ### Step 2: Basic Add Form
 
-- [x] Create an "Add Entry" screen with 5 input fields (Title, Author, Location, Passage, Note)
+- [x] Create an "Add Insight" screen with 5 input fields (Title, Author, Location, Passage, Note)
 - [x] Add a "Save" button
 - [x] For now, just console.log the data when Save is pressed
 - [x] Test on phone
@@ -105,23 +106,25 @@ That's it. Nothing else.
 - [x] Make the Save button actually store the entry locally
 - [x] Test that data persists when you close/reopen the app
 
-### Step 4: View Entries
+### Step 4: View Insights
 
-- [x] Create a "View Entries" screen
-- [x] Load all saved entries from storage
+- [x] Create a "View Insights" screen
+- [x] Load all saved insights from storage
 - [x] Display them in a list (just title and first few words of note)
 - [x] Add Add entry from View screens
 
 ### Step 5: Search
 
 - [x] Add a search bar to the View screen
-- [x] Filter the displayed entries based on search text
+- [x] Filter the displayed insights based on search text
 - [x] Test that it searches across all fields
 
 ### Step 6: Polish
 
+[Figma](https://www.figma.com/design/VS9X0yAVxQiWBF5rrakoVQ/Untitled?node-id=0-1&t=ZRczTMS1U9dmdl10-1)
+
 - [ ] Make it look good (clean UI, proper spacing, mobile-friendly)
-- [ ] Handle edge cases (empty fields, no entries yet, etc.)
+- [ ] Handle edge cases (empty fields, no insights yet, etc.)
 - [ ] Final testing on phone
 
 ### Step 7: Done!

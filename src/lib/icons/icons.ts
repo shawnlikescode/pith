@@ -16,6 +16,7 @@ import {
 	Hash,
 	Plus,
 	X,
+	LocateFixed,
 } from "lucide-react-native";
 
 function iconWithClassName(icon: LucideIcon) {
@@ -45,6 +46,7 @@ iconWithClassName(User);
 iconWithClassName(Hash);
 iconWithClassName(Plus);
 iconWithClassName(X);
+iconWithClassName(LocateFixed);
 
 export {
 	type LucideIcon,
@@ -63,4 +65,5 @@ export {
 	Hash,
 	Plus,
 	X,
+	LocateFixed,
 };
