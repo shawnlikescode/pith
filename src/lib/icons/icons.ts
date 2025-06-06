@@ -17,6 +17,7 @@ import {
 	Plus,
 	X,
 	LocateFixed,
+	Home,
 } from "lucide-react-native";
 
 function iconWithClassName(icon: LucideIcon) {
@@ -47,6 +48,7 @@ iconWithClassName(Hash);
 iconWithClassName(Plus);
 iconWithClassName(X);
 iconWithClassName(LocateFixed);
+iconWithClassName(Home);
 
 export {
 	type LucideIcon,
@@ -66,4 +68,5 @@ export {
 	Plus,
 	X,
 	LocateFixed,
+	Home,
 };

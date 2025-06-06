@@ -1,52 +1,44 @@
 import React from "react";
 import {
 	View,
-	TouchableWithoutFeedback,
 	ScrollView,
 	KeyboardAvoidingView,
 	Platform,
+	type TextInput,
 } from "react-native";
-import { useRouter } from "expo-router";
 import { Label } from "~/components/ui/label";
-import { useKeyboard } from "~/lib/hooks/keyboard";
 import { Book, User } from "~/lib/icons/icons";
-import { Text } from "~/components/ui/text";
-import { Button } from "~/components/ui/button";
 import { useAppForm, defaultFormOptions } from "../hooks/use-insight-form";
 import { useFormSubmission } from "../hooks/use-form-submission";
-import { cn } from "~/lib/utils";
 
 export default function AddEntryForm() {
-	const router = useRouter();
-	const { isKeyboardVisible, keyboardHeight, dismissKeyboard } = useKeyboard();
 	const { submitForm } = useFormSubmission();
 
-	console.log({ isKeyboardVisible, keyboardHeight });
+	const sourceRef = React.useRef<TextInput>(null!);
+	const pageNumberRef = React.useRef<TextInput>(null!);
+	const authorRef = React.useRef<TextInput>(null!);
+	const tagRef = React.useRef<TextInput>(null!);
 
 	const form = useAppForm({
 		...defaultFormOptions,
 		onSubmit: async ({ value }) => {
-			const entry = await submitForm(value);
-			if (entry) {
+			const insight = await submitForm(value);
+			if (insight) {
 				form.reset();
 			}
 		},
 	});
 
-	const handleCancel = () => {
-		router.back();
-	};
-
 	return (
-		<KeyboardAvoidingView
-			className="flex-1"
-			behavior={Platform.OS === "ios" ? "padding" : "height"}
-		>
-			<TouchableWithoutFeedback onPress={dismissKeyboard}>
-				<View className="flex-1 px-4 h-full">
+		<>
+			<KeyboardAvoidingView className="flex-auto" behavior={"padding"}>
+				<View className="flex-1 pr-4 pl-4">
 					<ScrollView
-						showsVerticalScrollIndicator={false}
 						keyboardShouldPersistTaps="handled"
+						showsVerticalScrollIndicator={false}
+						contentInsetAdjustmentBehavior="automatic"
+						contentContainerStyle={{ flexGrow: 1 }}
+						keyboardDismissMode="interactive"
 					>
 						{/* Type of Insight */}
 						<View className="pt-4 pb-4">
@@ -91,6 +83,8 @@ export default function AddEntryForm() {
 											Icon={Book}
 											returnKeyType="next"
 											className="mb-0"
+											textInputRef={sourceRef}
+											onSubmitEditing={() => pageNumberRef.current?.focus()}
 										/>
 									</View>
 								)}
@@ -106,6 +100,8 @@ export default function AddEntryForm() {
 											keyboardType="numeric"
 											returnKeyType="next"
 											className="mb-0"
+											textInputRef={pageNumberRef}
+											onSubmitEditing={() => authorRef.current?.focus()}
 										/>
 									</View>
 								)}
@@ -121,6 +117,8 @@ export default function AddEntryForm() {
 									placeholder="Author name"
 									Icon={User}
 									returnKeyType="next"
+									textInputRef={authorRef}
+									onSubmitEditing={() => tagRef.current?.focus()}
 								/>
 							)}
 						/>
@@ -132,30 +130,17 @@ export default function AddEntryForm() {
 							</Label>
 							<form.AppField
 								name="tags"
-								children={(field) => <field.TagManager />}
+								children={(field) => <field.TagManager textInputRef={tagRef} />}
 							/>
 						</View>
 					</ScrollView>
-
-					{/* Cancel & Save Button */}
-					<View className="flex-1 flex-row items-center justify-between gap-4">
-						<View className="flex-1">
-							<Button
-								variant="outline"
-								className="mt-6 mb-8 pt-4 pb-4 rounded-md bg-transparent border-blue-700"
-								onPress={handleCancel}
-							>
-								<Text>Cancel</Text>
-							</Button>
-						</View>
-						<View className="flex-1">
-							<form.AppForm>
-								<form.SubmitButton label="Save" />
-							</form.AppForm>
-						</View>
-					</View>
 				</View>
-			</TouchableWithoutFeedback>
-		</KeyboardAvoidingView>
+			</KeyboardAvoidingView>
+			<View className="p-4">
+				<form.AppForm>
+					<form.SubmitButton label="Save" />
+				</form.AppForm>
+			</View>
+		</>
 	);
 }

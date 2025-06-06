@@ -1,10 +1,11 @@
 import React from "react";
-import { View } from "react-native";
+import { View, TextInput } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { Input } from "~/components/ui/input";
 import { Hash, Plus, X } from "~/lib/icons/icons";
 import { useFieldContext } from "../hooks/form-context";
+import { cn } from "~/lib/utils";
 
 // Helper function to format errors properly
 const formatErrors = (errors: any[]): string => {
@@ -21,7 +22,11 @@ const formatErrors = (errors: any[]): string => {
 		.join(", ");
 };
 
-export function TagManager() {
+interface TagManagerProps {
+	textInputRef?: React.RefObject<TextInput>;
+}
+
+export function TagManager({ textInputRef }: TagManagerProps) {
 	const field = useFieldContext<string[]>();
 	const [newTag, setNewTag] = React.useState("");
 
@@ -57,16 +62,19 @@ export function TagManager() {
 				<View className="relative flex-1">
 					<Hash
 						size={18}
-						className="absolute left-3 text-gray-500 z-10"
-						style={{ top: "50%", marginTop: -9 }}
+						className="absolute left-3 text-gray-500 z-10 top-1/2 -mt-[9px]"
 					/>
 					<Input
+						ref={textInputRef}
 						value={newTag}
 						onChangeText={setNewTag}
 						placeholder={
 							isMaxTagsReached ? "Maximum 5 tags reached" : "Add a tag"
 						}
-						className="text-base pl-10 bg-transparent focus:border-blue-700"
+						className={cn(
+							"text-base pl-10 bg-transparent border-blue-200 focus:border-blue-700",
+							field.state.meta.errors.length > 0 && "border-red-500"
+						)}
 						returnKeyType="done"
 						onSubmitEditing={handleAddTag}
 						editable={!isMaxTagsReached}
@@ -105,12 +113,6 @@ export function TagManager() {
 					</View>
 				)}
 			</View>
-
-			{field.state.meta.errors.length > 0 && (
-				<Text className="text-red-500 text-sm mt-1">
-					{formatErrors(field.state.meta.errors)}
-				</Text>
-			)}
 		</View>
 	);
 }

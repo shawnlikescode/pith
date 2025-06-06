@@ -25,7 +25,7 @@ export function SubmitButton({
 					onPress={form.handleSubmit}
 					disabled={isSubmitting}
 					className={cn(
-						"mt-6 mb-8 pt-4 pb-4 rounded-md bg-blue-400",
+						"pt-4 pb-4 rounded-md bg-blue-400",
 						isSubmitting ? "opacity-50" : "opacity-100",
 						className
 					)}

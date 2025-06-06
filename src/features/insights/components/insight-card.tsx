@@ -16,7 +16,6 @@ import {
 	LocateFixed,
 	Hash,
 } from "~/lib/icons/icons";
-import { cn } from "~/lib/utils";
 
 interface InsightCardProps {
 	insight: InsightWithBook;

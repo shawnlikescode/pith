@@ -28,13 +28,6 @@ export default function IndexScreen() {
 				<View className="flex-1">
 					<RecentInsights />
 				</View>
-				<View className="pb-6">
-					<Link href="/add-insight" asChild>
-						<Button className="bg-primary">
-							<Text className="text-primary-foreground">Add New Entry</Text>
-						</Button>
-					</Link>
-				</View>
 			</View>
 		</SafeAreaView>
 	);
