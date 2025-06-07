@@ -1,26 +1,11 @@
 import React from "react";
 import { View, TextInput } from "react-native";
 import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
 import { Input } from "~/components/ui/input";
-import { Hash, Plus, X } from "~/lib/icons/icons";
+import { Hash, Plus } from "~/lib/icons/icons";
 import { useFieldContext } from "../hooks/form-context";
 import { cn } from "~/lib/utils";
-
-// Helper function to format errors properly
-const formatErrors = (errors: any[]): string => {
-	return errors
-		.map((error) => {
-			if (typeof error === "string") {
-				return error;
-			}
-			if (error && typeof error === "object") {
-				return error.message || error.toString();
-			}
-			return String(error);
-		})
-		.join(", ");
-};
+import { TagChip } from "./ui/tag-chip";
 
 interface TagManagerProps {
 	textInputRef?: React.RefObject<TextInput>;
@@ -96,19 +81,12 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 				{field.state.value.length > 0 && (
 					<View className="flex-row flex-wrap gap-2">
 						{field.state.value.map((tag, index) => (
-							<Button
+							<TagChip
 								key={`tag-${tag}-${field.state.value.length}`}
+								label={tag}
+								variant="removable"
 								onPress={() => handleRemoveTag(index)}
-								className="flex-row items-center bg-blue-100 rounded-md border-blue-400 border pl-3 pr-2 pt-1 pb-1"
-							>
-								<Text
-									className="text-blue-700 text-sm mr-2"
-									style={{ lineHeight: 14 }}
-								>
-									{tag}
-								</Text>
-								<X className="text-blue-700" size={14} />
-							</Button>
+							/>
 						))}
 					</View>
 				)}

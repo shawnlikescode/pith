@@ -1,10 +1,16 @@
 import { useMemo } from "react";
 import { useInsightsWithBooks } from "./use-insights-with-books";
-import { filterInsightsByQuery, limitInsights } from "../utils/data-utils";
-import type { InsightWithBook } from "../types";
+import {
+	filterInsights,
+	limitInsights,
+	type FilterOptions,
+} from "../utils/data-utils";
+import type { InsightWithBook, FlexibleCategory, FlexibleTag } from "../types";
 
 interface UseFilteredInsightsProps {
 	searchQuery?: string;
+	categories?: FlexibleCategory[];
+	tags?: FlexibleTag[];
 	limit?: number;
 }
 
@@ -19,13 +25,19 @@ interface UseFilteredInsightsResult {
 
 export function useFilteredInsights({
 	searchQuery = "",
+	categories = [],
+	tags = [],
 	limit,
 }: UseFilteredInsightsProps = {}): UseFilteredInsightsResult {
 	const { insights, loading, error, refetch } = useInsightsWithBooks();
 
 	const filteredInsights = useMemo(() => {
-		return filterInsightsByQuery(insights, searchQuery);
-	}, [insights, searchQuery]);
+		return filterInsights(insights, {
+			searchQuery,
+			categories,
+			tags,
+		});
+	}, [insights, searchQuery, categories, tags]);
 
 	const displayedInsights = useMemo(() => {
 		return limitInsights(filteredInsights, limit);

@@ -18,6 +18,8 @@ import {
 	X,
 	LocateFixed,
 	Home,
+	Search,
+	Filter,
 } from "lucide-react-native";
 
 function iconWithClassName(icon: LucideIcon) {
@@ -49,6 +51,8 @@ iconWithClassName(Plus);
 iconWithClassName(X);
 iconWithClassName(LocateFixed);
 iconWithClassName(Home);
+iconWithClassName(Search);
+iconWithClassName(Filter);
 
 export {
 	type LucideIcon,
@@ -69,4 +73,6 @@ export {
 	X,
 	LocateFixed,
 	Home,
+	Search,
+	Filter,
 };

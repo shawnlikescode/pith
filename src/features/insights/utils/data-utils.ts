@@ -1,4 +1,10 @@
-import type { InsightWithBook } from "../types";
+import type { InsightWithBook, FlexibleCategory, FlexibleTag } from "../types";
+
+export interface FilterOptions {
+	searchQuery?: string;
+	categories?: FlexibleCategory[];
+	tags?: FlexibleTag[];
+}
 
 export const filterInsightsByQuery = (
 	insights: InsightWithBook[],
@@ -27,6 +33,34 @@ export const filterInsightsByQuery = (
 	});
 };
 
+export const filterInsights = (
+	insights: InsightWithBook[],
+	options: FilterOptions = {}
+): InsightWithBook[] => {
+	let filtered = insights;
+
+	// Apply search query filter
+	if (options.searchQuery?.trim()) {
+		filtered = filterInsightsByQuery(filtered, options.searchQuery);
+	}
+
+	// Apply category filter
+	if (options.categories && options.categories.length > 0) {
+		filtered = filtered.filter((insight) =>
+			options.categories!.includes(insight.category)
+		);
+	}
+
+	// Apply tag filter
+	if (options.tags && options.tags.length > 0) {
+		filtered = filtered.filter((insight) =>
+			options.tags!.some((tag) => insight.tags.includes(tag))
+		);
+	}
+
+	return filtered;
+};
+
 export const limitInsights = (
 	insights: InsightWithBook[],
 	limit?: number
@@ -42,4 +76,16 @@ export const formatDate = (dateString: string): string => {
 export const truncateText = (text: string, maxLength: number = 100): string => {
 	if (text.length <= maxLength) return text;
 	return text.substring(0, maxLength) + "...";
+};
+
+export const getUniqueCategories = (
+	insights: InsightWithBook[]
+): FlexibleCategory[] => {
+	const categories = insights.map((insight) => insight.category);
+	return [...new Set(categories)];
+};
+
+export const getUniqueTags = (insights: InsightWithBook[]): FlexibleTag[] => {
+	const allTags = insights.flatMap((insight) => insight.tags);
+	return [...new Set(allTags)].sort();
 };

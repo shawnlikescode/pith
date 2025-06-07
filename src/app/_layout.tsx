@@ -21,6 +21,13 @@ export default function RootLayout() {
 					}}
 				/>
 				<Stack.Screen
+					name="filter-modal"
+					options={{
+						presentation: "modal",
+						headerShown: false,
+					}}
+				/>
+				<Stack.Screen
 					name="debug"
 					options={{
 						title: "Debug",

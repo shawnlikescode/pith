@@ -29,7 +29,7 @@ export default function InsightCard({
 	noteMaxLength = 150,
 }: InsightCardProps) {
 	return (
-		<Card className="w-full mb-4 border-blue-300 bg-white">
+		<Card className="w-full mb-4 border-blue-200 bg-white">
 			<CardContent className="pr-2 pl-2 pt-4 pb-4">
 				<View className="flex flex-row justify-between items-center pl-2 pr-2 gap-8">
 					<View className="flex flex-row items-center gap-2">
