@@ -1,11 +1,6 @@
 import React from "react";
-import { View } from "react-native";
-import DebugDataViewer from "~/features/debug/debug-data-viewer";
+import { DebugScreen } from "~/features/debug/screens/debug-screen";
 
-export default function DebugScreen() {
-	return (
-		<View className="flex-1 bg-white">
-			<DebugDataViewer />
-		</View>
-	);
+export default function DebugPage() {
+	return <DebugScreen />;
 }

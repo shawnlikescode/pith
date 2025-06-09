@@ -20,9 +20,13 @@ import {
 	Home,
 	Search,
 	Filter,
+	AlertTriangle,
 } from "lucide-react-native";
 
-function iconWithClassName(icon: LucideIcon) {
+/**
+ * Configures className prop support for Lucide icons
+ */
+function iconWithClassName(icon: LucideIcon): void {
 	cssInterop(icon, {
 		className: {
 			target: "style",
@@ -53,6 +57,7 @@ iconWithClassName(LocateFixed);
 iconWithClassName(Home);
 iconWithClassName(Search);
 iconWithClassName(Filter);
+iconWithClassName(AlertTriangle);
 
 export {
 	type LucideIcon,
@@ -75,4 +80,5 @@ export {
 	Home,
 	Search,
 	Filter,
+	AlertTriangle,
 };

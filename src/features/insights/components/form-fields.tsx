@@ -1,11 +1,12 @@
 import React from "react";
-import { View, Text, TextInput } from "react-native";
+import { View, type TextInput } from "react-native";
+import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
-import { Label } from "~/components/ui/label";
-import { type LucideIcon } from "~/lib/icons/icons";
 import { useFieldContext } from "../hooks/form-context";
 import { cn } from "~/lib/utils";
+import { ICON_SIZES } from "~/lib/constants";
+import type { LucideIcon } from "lucide-react-native";
 
 interface BaseFieldProps {
 	label: string;
@@ -25,20 +26,6 @@ interface TextFieldProps extends BaseFieldProps {
 interface TextareaFieldProps extends BaseFieldProps {
 	placeholder: string;
 }
-
-const formatErrors = (errors: any[]): string => {
-	return errors
-		.map((error) => {
-			if (typeof error === "string") {
-				return error;
-			}
-			if (error && typeof error === "object") {
-				return error.message || error.toString();
-			}
-			return String(error);
-		})
-		.join(", ");
-};
 
 export function TextField({
 	label,
@@ -64,7 +51,7 @@ export function TextField({
 			<View className="relative">
 				{Icon && (
 					<Icon
-						size={18}
+						size={ICON_SIZES.MEDIUM_LARGE}
 						className="absolute left-3 text-gray-500 z-10 top-1/2 -mt-[9px]"
 					/>
 				)}

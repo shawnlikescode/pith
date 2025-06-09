@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { storageAdapter } from "~/lib/storage";
 import { Text } from "~/components/ui/text";
-import { useBooks } from "../insights/hooks/use-books";
-import { useInsights } from "../insights/hooks/use-insights";
-import type { Book, Insight } from "../insights/types";
+import { useBooks } from "~/features/insights/hooks/use-books";
+import { useInsights } from "~/features/insights/hooks/use-insights";
+import type { Book, Insight } from "~/features/insights/types";
 import { Button } from "~/components/ui/button";
 import {
 	Card,
@@ -14,7 +14,7 @@ import {
 	CardTitle,
 } from "~/components/ui/card";
 
-export default function DebugDataViewer() {
+export function DebugDataViewer() {
 	const [books, setBooks] = useState<Book[]>([]);
 	const [insights, setInsights] = useState<Insight[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +22,7 @@ export default function DebugDataViewer() {
 	const { getBooks } = useBooks();
 	const { getInsights } = useInsights();
 
-	const loadData = async () => {
+	async function loadData(): Promise<void> {
 		setIsLoading(true);
 		try {
 			const [booksData, insightsData] = await Promise.all([
@@ -37,31 +37,27 @@ export default function DebugDataViewer() {
 		} finally {
 			setIsLoading(false);
 		}
-	};
+	}
 
-	const logRawAsyncStorageData = async () => {
+	async function logRawStorageData(): Promise<void> {
 		try {
-			const booksRaw = await AsyncStorage.getItem("books");
-			const insightsRaw = await AsyncStorage.getItem("insights");
+			const booksData = await storageAdapter.books.get();
+			const insightsData = await storageAdapter.insights.get();
 
-			console.log("=== RAW ASYNCSTORAGE DATA ===");
-			console.log("Books raw:", booksRaw);
-			console.log("Insights raw:", insightsRaw);
-			console.log("Books parsed:", booksRaw ? JSON.parse(booksRaw) : null);
-			console.log(
-				"Insights parsed:",
-				insightsRaw ? JSON.parse(insightsRaw) : null
-			);
+			console.log("=== RAW STORAGE DATA ===");
+			console.log("Books:", booksData);
+			console.log("Insights:", insightsData);
 			console.log("=== END RAW DATA ===");
 		} catch (error) {
-			console.error("Error reading raw AsyncStorage:", error);
+			console.error("Error reading raw storage:", error);
 		}
-	};
+	}
 
-	const clearAsyncStorage = async () => {
-		await AsyncStorage.clear();
+	async function clearStorage(): Promise<void> {
+		await storageAdapter.books.remove();
+		await storageAdapter.insights.remove();
 		loadData();
-	};
+	}
 
 	useEffect(() => {
 		loadData();
@@ -78,18 +74,13 @@ export default function DebugDataViewer() {
 				)}
 				<View className="mb-4">
 					<Button
-						onPress={logRawAsyncStorageData}
+						onPress={logRawStorageData}
 						className="bg-green-500 p-2 rounded"
 					>
-						<Text className="text-white text-center">
-							Log Raw AsyncStorage Data
-						</Text>
+						<Text className="text-white text-center">Log Raw Storage Data</Text>
 					</Button>
-					<Button
-						onPress={clearAsyncStorage}
-						className="bg-red-500 p-2 rounded"
-					>
-						<Text className="text-white text-center">Clear AsyncStorage</Text>
+					<Button onPress={clearStorage} className="bg-red-500 p-2 rounded">
+						<Text className="text-white text-center">Clear Storage</Text>
 					</Button>
 				</View>
 			</View>

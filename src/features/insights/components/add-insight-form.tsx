@@ -3,15 +3,19 @@ import {
 	View,
 	ScrollView,
 	KeyboardAvoidingView,
-	Platform,
 	type TextInput,
 } from "react-native";
 import { Label } from "~/components/ui/label";
 import { Book, User } from "~/lib/icons/icons";
 import { useAppForm, defaultFormOptions } from "../hooks/use-insight-form";
 import { useFormSubmission } from "../hooks/use-form-submission";
+import {
+	FORM_LABELS,
+	FORM_PLACEHOLDERS,
+	FORM_CONFIG,
+} from "../constants/form-constants";
 
-export default function AddEntryForm() {
+export function AddInsightForm() {
 	const { submitForm } = useFormSubmission();
 
 	const sourceRef = React.useRef<TextInput>(null!);
@@ -31,19 +35,28 @@ export default function AddEntryForm() {
 
 	return (
 		<>
-			<KeyboardAvoidingView className="flex-auto" behavior={"padding"}>
+			<KeyboardAvoidingView
+				className="flex-auto"
+				behavior={FORM_CONFIG.KEYBOARD_BEHAVIOR}
+			>
 				<View className="flex-1 pr-4 pl-4">
 					<ScrollView
-						keyboardShouldPersistTaps="handled"
-						showsVerticalScrollIndicator={false}
-						contentInsetAdjustmentBehavior="automatic"
+						keyboardShouldPersistTaps={
+							FORM_CONFIG.SCROLL_PROPS.keyboardShouldPersistTaps
+						}
+						showsVerticalScrollIndicator={
+							FORM_CONFIG.SCROLL_PROPS.showsVerticalScrollIndicator
+						}
+						contentInsetAdjustmentBehavior={
+							FORM_CONFIG.SCROLL_PROPS.contentInsetAdjustmentBehavior
+						}
 						contentContainerStyle={{ flexGrow: 1 }}
-						keyboardDismissMode="interactive"
+						keyboardDismissMode={FORM_CONFIG.SCROLL_PROPS.keyboardDismissMode}
 					>
 						{/* Type of Insight */}
 						<View className="pt-4 pb-4">
 							<Label className="text-lg font-medium text-gray-900 mb-4">
-								Type of Insight
+								{FORM_LABELS.TYPE_OF_INSIGHT}
 							</Label>
 							<form.AppField
 								name="insightType"
@@ -59,11 +72,15 @@ export default function AddEntryForm() {
 									name="insight"
 									children={(field) => (
 										<field.TextareaField
-											label={insightType === "quote" ? "Quote" : "Your Insight"}
+											label={
+												insightType === "quote"
+													? FORM_LABELS.QUOTE
+													: FORM_LABELS.YOUR_INSIGHT
+											}
 											placeholder={
 												insightType === "quote"
-													? "What excerpt from the source do you want to capture?"
-													: "What insight or thought do you want to capture?"
+													? FORM_PLACEHOLDERS.QUOTE
+													: FORM_PLACEHOLDERS.INSIGHT
 											}
 										/>
 									)}
@@ -78,8 +95,8 @@ export default function AddEntryForm() {
 								children={(field) => (
 									<View className="flex-1">
 										<field.TextField
-											label="Source"
-											placeholder="Book title, article, etc."
+											label={FORM_LABELS.SOURCE}
+											placeholder={FORM_PLACEHOLDERS.SOURCE}
 											Icon={Book}
 											returnKeyType="next"
 											className="mb-0"
@@ -95,8 +112,8 @@ export default function AddEntryForm() {
 								children={(field) => (
 									<View className="w-24">
 										<field.TextField
-											label="Page #"
-											placeholder="123"
+											label={FORM_LABELS.PAGE_NUMBER}
+											placeholder={FORM_PLACEHOLDERS.PAGE_NUMBER}
 											keyboardType="numeric"
 											returnKeyType="next"
 											className="mb-0"
@@ -113,8 +130,8 @@ export default function AddEntryForm() {
 							name="author"
 							children={(field) => (
 								<field.TextField
-									label="Author"
-									placeholder="Author name"
+									label={FORM_LABELS.AUTHOR}
+									placeholder={FORM_PLACEHOLDERS.AUTHOR}
 									Icon={User}
 									returnKeyType="next"
 									textInputRef={authorRef}
@@ -126,7 +143,7 @@ export default function AddEntryForm() {
 						{/* Tags */}
 						<View className="mb-6">
 							<Label className="text-lg font-medium text-gray-900 mb-2">
-								Tags
+								{FORM_LABELS.TAGS}
 							</Label>
 							<form.AppField
 								name="tags"
@@ -138,7 +155,7 @@ export default function AddEntryForm() {
 			</KeyboardAvoidingView>
 			<View className="p-4">
 				<form.AppForm>
-					<form.SubmitButton label="Save" />
+					<form.SubmitButton label={FORM_LABELS.SAVE} />
 				</form.AppForm>
 			</View>
 		</>

@@ -2,8 +2,9 @@ import React from "react";
 import { View, FlatList } from "react-native";
 import { Text } from "~/components/ui/text";
 import { cn } from "~/lib/utils";
+import { PERFORMANCE } from "~/lib/constants";
 import { useFilteredInsights } from "../hooks/use-filtered-insights";
-import InsightCard from "./insight-card";
+import { InsightCard } from "./insight-card";
 import type { InsightWithBook, FlexibleCategory, FlexibleTag } from "../types";
 
 interface InsightsListProps {
@@ -14,7 +15,7 @@ interface InsightsListProps {
 	tags?: FlexibleTag[];
 }
 
-export default function InsightsList({
+export function InsightsList({
 	limit,
 	showHeader = true,
 	searchQuery = "",
@@ -117,8 +118,8 @@ export default function InsightsList({
 				keyExtractor={(item) => item.id}
 				showsVerticalScrollIndicator={false}
 				removeClippedSubviews={true}
-				maxToRenderPerBatch={10}
-				windowSize={10}
+				maxToRenderPerBatch={PERFORMANCE.MAX_RENDER_PER_BATCH}
+				windowSize={PERFORMANCE.WINDOW_SIZE}
 				scrollEnabled={!limit} // Disable scrolling for recent insights (limited lists)
 			/>
 		</View>

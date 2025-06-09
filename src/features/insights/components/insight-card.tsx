@@ -2,8 +2,9 @@ import React from "react";
 import { View } from "react-native";
 import { Card, CardContent } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
+import { formatDate, truncateText } from "~/lib/utils";
+import { TEXT_LIMITS, ICON_SIZES } from "~/lib/constants";
 import type { InsightWithBook, Insight } from "../types";
-import { formatDate, truncateText } from "../utils/data-utils";
 import {
 	MessageSquare,
 	CircleHelp,
@@ -23,10 +24,10 @@ interface InsightCardProps {
 	noteMaxLength?: number;
 }
 
-export default function InsightCard({
+export function InsightCard({
 	insight,
-	passageMaxLength = 120,
-	noteMaxLength = 150,
+	passageMaxLength = TEXT_LIMITS.PASSAGE_MAX_LENGTH,
+	noteMaxLength = TEXT_LIMITS.NOTE_MAX_LENGTH,
 }: InsightCardProps) {
 	return (
 		<Card className="w-full mb-4 border-blue-200 bg-white">
@@ -36,14 +37,17 @@ export default function InsightCard({
 						<CategoryIcon
 							insight={insight}
 							className="text-blue-500"
-							size={10}
+							size={ICON_SIZES.SMALL}
 						/>
 						<Text className="text-xs font-semibold text-blue-500 leading-3">
 							{insight.category}
 						</Text>
 					</View>
 					<View className="flex flex-row items-center gap-2">
-						<Calendar className="text-blue-500 -mt-0.5" size={10} />
+						<Calendar
+							className="text-blue-500 -mt-0.5"
+							size={ICON_SIZES.SMALL}
+						/>
 						<Text className="text-xs text-blue-500 leading-3">
 							{formatDate(insight.createdAt)}
 						</Text>
@@ -58,26 +62,26 @@ export default function InsightCard({
 				</View>
 				<View className="flex flex-row gap-4 mt-1 pl-2">
 					<View className="flex flex-row gap-2">
-						<Book className="text-gray-700" size={10} />
+						<Book className="text-gray-700" size={ICON_SIZES.SMALL} />
 						<Text className="text-xs text-gray-700 font-medium leading-3">
 							{insight.book.title}
 						</Text>
 					</View>
 					<View className="flex flex-row gap-2">
-						<User className="text-gray-700" size={10} />
+						<User className="text-gray-700" size={ICON_SIZES.SMALL} />
 						<Text className="text-xs text-gray-700 font-medium leading-3">
 							{insight.book.author}
 						</Text>
 					</View>
 					<View className="flex flex-row gap-2">
-						<LocateFixed className="text-gray-700" size={10} />
+						<LocateFixed className="text-gray-700" size={ICON_SIZES.SMALL} />
 						<Text className="text-xs text-gray-700 font-medium leading-3">
 							p. {insight.location}
 						</Text>
 					</View>
 				</View>
 				<View className="flex flex-row gap-2 mt-6 items-center pl-2">
-					<Hash className="text-blue-500" size={10} />
+					<Hash className="text-blue-500" size={ICON_SIZES.SMALL} />
 					{insight.tags.map((tag, index) => (
 						<Text
 							key={index}

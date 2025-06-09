@@ -5,6 +5,7 @@ import { Input } from "~/components/ui/input";
 import { Hash, Plus } from "~/lib/icons/icons";
 import { useFieldContext } from "../hooks/form-context";
 import { cn } from "~/lib/utils";
+import { ICON_SIZES } from "~/lib/constants";
 import { TagChip } from "./ui/tag-chip";
 
 interface TagManagerProps {
@@ -15,7 +16,7 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 	const field = useFieldContext<string[]>();
 	const [newTag, setNewTag] = React.useState("");
 
-	const handleAddTag = () => {
+	function handleAddTag(): void {
 		const value = newTag.trim().toLowerCase();
 
 		// Check if we already have 5 tags
@@ -32,11 +33,11 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 			field.pushValue(value);
 			setNewTag("");
 		}
-	};
+	}
 
-	const handleRemoveTag = (index: number) => {
+	function handleRemoveTag(index: number): void {
 		field.removeValue(index);
-	};
+	}
 
 	const isMaxTagsReached = field.state.value.length >= 5;
 
@@ -46,7 +47,7 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 			<View className="flex-row items-center mb-3 relative">
 				<View className="relative flex-1">
 					<Hash
-						size={18}
+						size={ICON_SIZES.MEDIUM_LARGE}
 						className="absolute left-3 text-gray-500 z-10 top-1/2 -mt-[9px]"
 					/>
 					<Input
@@ -72,7 +73,7 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 				>
 					<Plus
 						className={isMaxTagsReached ? "text-gray-400" : "text-blue-700"}
-						size={18}
+						size={ICON_SIZES.MEDIUM_LARGE}
 					/>
 				</Button>
 			</View>

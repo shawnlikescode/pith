@@ -1,21 +1,21 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { nanoid } from "nanoid";
+import { storageAdapter } from "~/lib/storage";
 import type { Insight } from "../types";
 
 export function useInsights() {
-	const getInsights = async (): Promise<Insight[]> => {
+	async function getInsights(): Promise<Insight[]> {
 		try {
-			const insightsJson = await AsyncStorage.getItem("insights");
-			return insightsJson ? JSON.parse(insightsJson) : [];
+			const insights = await storageAdapter.insights.get();
+			return insights ?? [];
 		} catch (error) {
 			console.error("Error getting insights:", error);
 			return [];
 		}
-	};
+	}
 
-	const saveEntry = async (
+	async function saveEntry(
 		insightData: Omit<Insight, "id" | "createdAt">
-	): Promise<Insight> => {
+	): Promise<Insight> {
 		try {
 			const insights = await getInsights();
 
@@ -26,14 +26,14 @@ export function useInsights() {
 			} as Insight; // Type assertion needed for discriminated union
 
 			const updatedInsights = [...insights, newInsight];
-			await AsyncStorage.setItem("insights", JSON.stringify(updatedInsights));
+			await storageAdapter.insights.set(updatedInsights);
 
 			return newInsight;
 		} catch (error) {
 			console.error("Error saving entry:", error);
 			throw error;
 		}
-	};
+	}
 
 	return {
 		getInsights,

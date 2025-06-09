@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useInsights } from "./use-insights";
 import { useBooks } from "./use-books";
+import { handleError } from "~/lib/error-handling";
 import type { Insight, Book, InsightWithBook } from "../types";
 
 interface UseInsightsWithBooksResult {
@@ -40,8 +41,8 @@ export function useInsightsWithBooks(): UseInsightsWithBooksResult {
 				setInsightsData(insights);
 				setBooksData(books);
 			} catch (err) {
-				console.error("Error loading insights with books:", err);
-				setError(err instanceof Error ? err.message : "Failed to load data");
+				const appError = handleError(err, "Loading insights with books");
+				setError(appError.message);
 			} finally {
 				setLoading(false);
 			}

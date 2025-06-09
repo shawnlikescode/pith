@@ -68,16 +68,6 @@ export const limitInsights = (
 	return limit ? insights.slice(0, limit) : insights;
 };
 
-export const formatDate = (dateString: string): string => {
-	const date = new Date(dateString);
-	return date.toLocaleDateString();
-};
-
-export const truncateText = (text: string, maxLength: number = 100): string => {
-	if (text.length <= maxLength) return text;
-	return text.substring(0, maxLength) + "...";
-};
-
 export const getUniqueCategories = (
 	insights: InsightWithBook[]
 ): FlexibleCategory[] => {
@@ -87,5 +77,5 @@ export const getUniqueCategories = (
 
 export const getUniqueTags = (insights: InsightWithBook[]): FlexibleTag[] => {
 	const allTags = insights.flatMap((insight) => insight.tags);
-	return [...new Set(allTags)].sort();
+	return [...new Set(allTags)];
 };

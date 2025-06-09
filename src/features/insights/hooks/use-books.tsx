@@ -1,23 +1,23 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { nanoid } from "nanoid";
+import { storageAdapter } from "~/lib/storage";
 import type { Book } from "../types";
 import "react-native-get-random-values";
 
 export function useBooks() {
-	const getBooks = async (): Promise<Book[]> => {
+	async function getBooks(): Promise<Book[]> {
 		try {
-			const booksJson = await AsyncStorage.getItem("books");
-			return booksJson ? JSON.parse(booksJson) : [];
+			const books = await storageAdapter.books.get();
+			return books ?? [];
 		} catch (error) {
 			console.error("Error getting books:", error);
 			return [];
 		}
-	};
+	}
 
-	const findOrCreateBook = async (
+	async function findOrCreateBook(
 		title: string,
 		author: string
-	): Promise<Book> => {
+	): Promise<Book> {
 		try {
 			const books = await getBooks();
 
@@ -39,14 +39,14 @@ export function useBooks() {
 			};
 
 			const updatedBooks = [...books, newBook];
-			await AsyncStorage.setItem("books", JSON.stringify(updatedBooks));
+			await storageAdapter.books.set(updatedBooks);
 
 			return newBook;
 		} catch (error) {
 			console.error("Error finding/creating book:", error);
 			throw error;
 		}
-	};
+	}
 
 	return {
 		getBooks,
