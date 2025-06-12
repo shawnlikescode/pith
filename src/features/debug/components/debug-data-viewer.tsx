@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View, ScrollView } from "react-native";
 import { storageAdapter } from "~/lib/storage";
 import { Text } from "~/components/ui/text";
-import { useBooks } from "~/features/insights/hooks/use-books";
-import { useInsights } from "~/features/insights/hooks/use-insights";
-import type { Book, Insight } from "~/features/insights/types";
+import { useBooks } from "~/lib/hooks/use-books";
+import { useInsights } from "~/lib/hooks/use-insights";
+import type { Book } from "~/lib/types/book";
+import type { Insight } from "~/lib/types/insight";
 import { Button } from "~/components/ui/button";
 import {
 	Card,
@@ -63,111 +64,119 @@ export function DebugDataViewer() {
 		loadData();
 	}, []);
 
+	if (isLoading) {
+		return (
+			<ScrollView className="flex-1 p-4">
+				<Text>Loading data...</Text>
+			</ScrollView>
+		);
+	}
+
 	return (
-		<ScrollView className="flex-1 p-4">
-			<View className="mb-4">
-				<Text className="text-2xl font-bold mb-2">Debug Data Viewer</Text>
-				{lastLoaded && (
-					<Text className="text-xs text-muted-foreground mb-2">
-						Data loaded: {lastLoaded.toLocaleTimeString()}
-					</Text>
-				)}
-				<View className="mb-4">
-					<Button
-						onPress={logRawStorageData}
-						className="bg-green-500 p-2 rounded"
-					>
-						<Text className="text-white text-center">Log Raw Storage Data</Text>
-					</Button>
-					<Button onPress={clearStorage} className="bg-red-500 p-2 rounded">
-						<Text className="text-white text-center">Clear Storage</Text>
-					</Button>
-				</View>
+		<ScrollView className="flex-1 p-4 gap-6">
+			{lastLoaded && (
+				<Text className="text-sm text-muted-foreground">
+					Last loaded: {lastLoaded.toLocaleString()}
+				</Text>
+			)}
+
+			<View className="flex flex-row gap-3">
+				<Button onPress={loadData} className="flex-1">
+					<Text>Refresh Data</Text>
+				</Button>
+				<Button
+					onPress={logRawStorageData}
+					variant="outline"
+					className="flex-1"
+				>
+					<Text>Log Raw Data</Text>
+				</Button>
+				<Button onPress={clearStorage} variant="destructive" className="flex-1">
+					<Text>Clear All</Text>
+				</Button>
 			</View>
 
-			{isLoading ? (
-				<View className="flex-1 justify-center items-center p-8">
-					<Text className="text-muted-foreground">Loading data...</Text>
-				</View>
-			) : (
-				<>
-					<View className="mb-6">
-						<Text className="text-xl font-semibold mb-3">
-							Books ({books.length})
-						</Text>
-						{books.length === 0 ? (
-							<Text className="text-muted-foreground italic">
-								No books saved yet
-							</Text>
-						) : (
-							books.map((book) => (
-								<Card key={book.id} className="mb-3">
+			{/* Books Section */}
+			<View>
+				<Text className="text-xl font-semibold mb-3">
+					Books ({books.length})
+				</Text>
+				{books.length === 0 ? (
+					<Text className="text-muted-foreground italic">
+						No books saved yet
+					</Text>
+				) : (
+					<View className="gap-3">
+						{books.map((book) => (
+							<Card key={book.id}>
+								<CardHeader>
+									<CardTitle>{book.title}</CardTitle>
+									<CardDescription>by {book.author}</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<Text className="text-xs text-muted-foreground">
+										ID: {book.id}
+									</Text>
+									<Text className="text-xs text-muted-foreground">
+										Created: {new Date(book.createdAt).toLocaleString()}
+									</Text>
+								</CardContent>
+							</Card>
+						))}
+					</View>
+				)}
+			</View>
+
+			{/* Insights Section */}
+			<View>
+				<Text className="text-xl font-semibold mb-3">
+					Insights ({insights.length})
+				</Text>
+				{insights.length === 0 ? (
+					<Text className="text-muted-foreground italic">
+						No insights saved yet
+					</Text>
+				) : (
+					<View className="gap-3">
+						{insights.map((entry) => {
+							const book = books.find((b) => b.id === entry.bookId);
+							return (
+								<Card key={entry.id}>
 									<CardHeader className="pb-2">
-										<CardTitle className="text-lg">{book.title}</CardTitle>
-										<CardDescription>by {book.author}</CardDescription>
+										<CardTitle className="text-lg">
+											{book ? book.title : "Unknown Book"}
+										</CardTitle>
+										<CardDescription>
+											{book ? `by ${book.author}` : "Unknown Author"} •{" "}
+											{entry.location}
+										</CardDescription>
 									</CardHeader>
 									<CardContent className="pt-0">
+										{entry.category === "quote" &&
+											"excerpt" in entry &&
+											entry.excerpt && (
+												<Text className="text-sm mb-2 italic">
+													"{entry.excerpt}"
+												</Text>
+											)}
+										{"note" in entry && entry.note && (
+											<Text className="text-sm text-card-foreground mb-2">
+												{entry.note}
+											</Text>
+										)}
 										<Text className="text-xs text-muted-foreground">
-											ID: {book.id}
+											ID: {entry.id}
 										</Text>
 										<Text className="text-xs text-muted-foreground">
-											Created: {new Date(book.createdAt).toLocaleString()}
+											Created: {new Date(entry.createdAt).toLocaleString()}
 										</Text>
 									</CardContent>
 								</Card>
-							))
-						)}
+							);
+						})}
 					</View>
-
-					<View>
-						<Text className="text-xl font-semibold mb-3">
-							Insights ({insights.length})
-						</Text>
-						{insights.length === 0 ? (
-							<Text className="text-muted-foreground italic">
-								No insights saved yet
-							</Text>
-						) : (
-							insights.map((entry) => {
-								const book = books.find((b) => b.id === entry.bookId);
-								return (
-									<Card key={entry.id} className="mb-3">
-										<CardHeader className="pb-2">
-											<CardTitle className="text-lg">
-												{book ? book.title : "Unknown Book"}
-											</CardTitle>
-											<CardDescription>
-												{book ? `by ${book.author}` : "Unknown Author"} •{" "}
-												{entry.location}
-											</CardDescription>
-										</CardHeader>
-										<CardContent className="pt-0">
-											{entry.category === "quote" &&
-												"excerpt" in entry &&
-												entry.excerpt && (
-													<Text className="text-sm mb-2 italic">
-														"{entry.excerpt}"
-													</Text>
-												)}
-											{"note" in entry && entry.note && (
-												<Text className="text-sm text-card-foreground mb-2">
-													{entry.note}
-												</Text>
-											)}
-											<Text className="text-xs text-muted-foreground">
-												ID: {entry.id}
-											</Text>
-											<Text className="text-xs text-muted-foreground">
-												Created: {new Date(entry.createdAt).toLocaleString()}
-											</Text>
-										</CardContent>
-									</Card>
-								);
-							})
-						)}
-					</View>
-				</>
-			)}
+				)}
+			</View>
 		</ScrollView>
 	);
 }

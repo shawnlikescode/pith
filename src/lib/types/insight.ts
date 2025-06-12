@@ -1,13 +1,8 @@
-export interface Book {
-	id: string;
-	title: string;
-	author: string;
-	createdAt: string;
-}
+import type { Book } from "./book";
 
 type Category = "thought" | "question" | "idea" | "quote";
 
-type FlexibleCategory = Category | (string & {});
+export type FlexibleCategory = Category | (string & {});
 
 type Tag =
 	| "personal"
@@ -17,15 +12,15 @@ type Tag =
 	| "finance"
 	| "relationship";
 
-type FlexibleTag = Tag | (string & {});
+export type FlexibleTag = Tag | (string & {});
 
 // Base insight interface with common properties
 interface BaseInsight {
-	id: string;
-	bookId: string;
+	readonly id: string;
+	readonly bookId: string;
+	readonly createdAt: string;
 	location: string; // page number, chapter, etc.
 	tags: FlexibleTag[];
-	createdAt: string;
 }
 
 // Quote insights use excerpts (the actual quoted text)
@@ -42,7 +37,6 @@ interface UserInsight extends BaseInsight {
 	excerpt?: string; // Optional if referencing specific text
 }
 
-// Discriminated union of insight types
 export type Insight = QuoteInsight | UserInsight;
 
 export type InsightWithBook = Insight & {
@@ -52,5 +46,3 @@ export type InsightWithBook = Insight & {
 export interface BookWithInsights extends Book {
 	insights: Insight[];
 }
-
-export type { FlexibleCategory, FlexibleTag };

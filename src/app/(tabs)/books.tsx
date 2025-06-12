@@ -1,42 +1,55 @@
-import React, { useState } from "react";
-import { View, ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Link } from "expo-router";
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
-import { Input } from "~/components/ui/input";
-import InsightsList from "~/features/insights/components/insight-list";
-import useDebounce from "~/features/insights/hooks/use-debounce";
-import "~/global.css";
+import { ScrollView, View, Text } from "react-native";
+import { useBooksWithInsights } from "~/features/books/hooks/use-books-with-insights";
+import { BookCard } from "~/features/books/components/book-card";
+import { cn } from "~/lib/utils";
 
-export default function ViewInsightsScreen() {
-	const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
-	const debouncedSearchQuery = useDebounce(searchQuery, 300);
+/**
+ * Books screen showing library of books with insight statistics
+ */
+export default function BooksScreen() {
+	const { books, loading, error } = useBooksWithInsights();
+
+	if (loading) {
+		return (
+			<View className="flex-1 bg-white justify-center items-center">
+				<Text className="text-gray-700">Loading books...</Text>
+			</View>
+		);
+	}
+
+	if (error) {
+		return (
+			<View className="flex-1 bg-white justify-center items-center px-4">
+				<Text className="text-red-500 text-center">Error: {error}</Text>
+			</View>
+		);
+	}
+
+	if (books.length === 0) {
+		return (
+			<View className="flex-1 bg-white justify-center items-center px-4">
+				<Text className="text-gray-700 text-center text-base leading-6">
+					No books yet. Start by adding insights to create your first book.
+				</Text>
+			</View>
+		);
+	}
 
 	return (
-		<>
-			<SafeAreaView className="flex-1 bg-white">
-				<View className="pl-4 pr-4 pt-2 pb-6">
-					<View className="mb-6">
-						<Link href="/add-entry" asChild>
-							<Button className="bg-primary">
-								<Text className="text-primary-foreground">Add New Entry</Text>
-							</Button>
-						</Link>
+		<View className="flex-1 bg-white">
+			<ScrollView showsVerticalScrollIndicator={false} className="p-4">
+				{books.map((book, index) => (
+					<View
+						key={book.id}
+						className={cn(
+							"mb-4",
+							index < books.length - 1 ? "pb-4 border-b border-blue-200" : ""
+						)}
+					>
+						<BookCard book={book} />
 					</View>
-
-					<View className="mb-4">
-						<Input
-							placeholder="Search your insights..."
-							value={searchQuery}
-							onChangeText={setSearchQuery}
-							className="w-full"
-						/>
-					</View>
-				</View>
-
-				<InsightsList showHeader={true} searchQuery={debouncedSearchQuery} />
-			</SafeAreaView>
-		</>
+				))}
+			</ScrollView>
+		</View>
 	);
 }

@@ -1,12 +1,11 @@
 import React from "react";
 import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
 import "~/global.css";
 import { useInsightsWithBooks } from "~/features/insights/hooks/use-insights-with-books";
 import { InsightsList } from "~/features/insights/components/insight-list";
 import { SearchBar } from "~/features/insights/components/search-bar";
-import type { FlexibleCategory, FlexibleTag } from "~/features/insights/types";
+import { FlexibleCategory, FlexibleTag } from "~/lib/types/insight";
 
 export default function IndexScreen() {
 	const { insights, loading } = useInsightsWithBooks();
@@ -46,25 +45,23 @@ export default function IndexScreen() {
 	}
 
 	return (
-		<SafeAreaView className="flex-1 bg-white">
-			<View className="flex-1 pl-4 pr-4 pt-6">
-				<SearchBar
+		<View className="flex-1 bg-white p-4 gap-6">
+			<SearchBar
+				searchQuery={searchQuery}
+				onSearchChange={handleSearchChange}
+				hasActiveFilters={hasActiveFilters}
+				selectedCategories={selectedCategories}
+				selectedTags={selectedTags}
+				insightsCount={insights.length}
+			/>
+			<View className="flex-1">
+				<InsightsList
+					showHeader={false}
 					searchQuery={searchQuery}
-					onSearchChange={handleSearchChange}
-					hasActiveFilters={hasActiveFilters}
-					selectedCategories={selectedCategories}
-					selectedTags={selectedTags}
-					insightsCount={insights.length}
+					categories={selectedCategories}
+					tags={selectedTags}
 				/>
-				<View className="flex-1">
-					<InsightsList
-						showHeader={false}
-						searchQuery={searchQuery}
-						categories={selectedCategories}
-						tags={selectedTags}
-					/>
-				</View>
 			</View>
-		</SafeAreaView>
+		</View>
 	);
 }

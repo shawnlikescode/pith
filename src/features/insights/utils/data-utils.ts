@@ -1,4 +1,8 @@
-import type { InsightWithBook, FlexibleCategory, FlexibleTag } from "../types";
+import type {
+	InsightWithBook,
+	FlexibleCategory,
+	FlexibleTag,
+} from "~/lib/types/insight";
 
 export interface FilterOptions {
 	searchQuery?: string;

@@ -1,9 +1,12 @@
 import { nanoid } from "nanoid";
 import { storageAdapter } from "~/lib/storage";
-import type { Book } from "../types";
+import type { Book } from "~/lib/types/book";
 import "react-native-get-random-values";
 
-export function useBooks() {
+export function useBooks(): {
+	getBooks: () => Promise<Book[]>;
+	findOrCreateBook: (title: string, author: string) => Promise<Book>;
+} {
 	async function getBooks(): Promise<Book[]> {
 		try {
 			const books = await storageAdapter.books.get();

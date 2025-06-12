@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { Insight, Book } from "~/features/insights/types";
+import type { Book } from "~/lib/types/book";
+import type { Insight } from "~/lib/types/insight";
 
-// Simple storage helpers
 export const storageAdapter = {
 	insights: {
 		get: async (): Promise<Insight[] | null> => {
@@ -13,7 +13,7 @@ export const storageAdapter = {
 				return null;
 			}
 		},
-		set: async (value: Insight[]) => {
+		set: async (value: Insight[]): Promise<void> => {
 			try {
 				await AsyncStorage.setItem("insights", JSON.stringify(value));
 			} catch (error) {
@@ -21,7 +21,7 @@ export const storageAdapter = {
 				throw error;
 			}
 		},
-		remove: async () => {
+		remove: async (): Promise<void> => {
 			try {
 				await AsyncStorage.removeItem("insights");
 			} catch (error) {
@@ -40,7 +40,7 @@ export const storageAdapter = {
 				return null;
 			}
 		},
-		set: async (value: Book[]) => {
+		set: async (value: Book[]): Promise<void> => {
 			try {
 				await AsyncStorage.setItem("books", JSON.stringify(value));
 			} catch (error) {
@@ -48,7 +48,7 @@ export const storageAdapter = {
 				throw error;
 			}
 		},
-		remove: async () => {
+		remove: async (): Promise<void> => {
 			try {
 				await AsyncStorage.removeItem("books");
 			} catch (error) {

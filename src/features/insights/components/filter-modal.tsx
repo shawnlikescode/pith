@@ -9,7 +9,7 @@ import { useInsightsWithBooks } from "../hooks/use-insights-with-books";
 import { getUniqueCategories, getUniqueTags } from "../utils/data-utils";
 import { CategoryFilter } from "./category-filter";
 import { TagFilter } from "./tag-filter";
-import type { FlexibleCategory, FlexibleTag } from "../types";
+import type { FlexibleCategory, FlexibleTag } from "~/lib/types/insight";
 
 export function FilterModal() {
 	const { insights } = useInsightsWithBooks();
@@ -99,9 +99,9 @@ export function FilterModal() {
 				</Button>
 			</View>
 
-			<ScrollView className="flex-1 p-4">
+			<ScrollView className="flex-1 p-4" contentContainerStyle={{ gap: 32 }}>
 				{/* Category Section */}
-				<View className="mb-8">
+				<View>
 					<Text className="text-lg font-semibold mb-4">Category</Text>
 					<CategoryFilter
 						availableCategories={availableCategories}
@@ -111,7 +111,7 @@ export function FilterModal() {
 				</View>
 
 				{/* Tags Section */}
-				<View className="mb-8">
+				<View>
 					<Text className="text-lg font-semibold mb-4">Tags</Text>
 					<TagFilter
 						availableTags={availableTags}

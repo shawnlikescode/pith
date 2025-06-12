@@ -1,9 +1,10 @@
 import { useState, useMemo, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { useInsights } from "./use-insights";
-import { useBooks } from "./use-books";
+import { useInsights } from "~/lib/hooks/use-insights";
+import { useBooks } from "~/lib/hooks/use-books";
 import { handleError } from "~/lib/error-handling";
-import type { Insight, Book, InsightWithBook } from "../types";
+import type { Insight, InsightWithBook } from "~/lib/types/insight";
+import type { Book } from "~/lib/types/book";
 
 interface UseInsightsWithBooksResult {
 	insights: InsightWithBook[];

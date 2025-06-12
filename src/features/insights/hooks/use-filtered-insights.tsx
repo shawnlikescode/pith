@@ -5,7 +5,11 @@ import {
 	limitInsights,
 	type FilterOptions,
 } from "../utils/data-utils";
-import type { InsightWithBook, FlexibleCategory, FlexibleTag } from "../types";
+import type {
+	InsightWithBook,
+	FlexibleCategory,
+	FlexibleTag,
+} from "~/lib/types/insight";
 
 interface UseFilteredInsightsProps {
 	searchQuery?: string;
