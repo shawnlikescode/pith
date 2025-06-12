@@ -37,7 +37,7 @@ export function useKeyboard(
 		};
 	}, []);
 
-	function dismissKeyboard() {
+	function dismissKeyboard(): void {
 		Keyboard.dismiss();
 		setKeyboardVisible(false);
 	}

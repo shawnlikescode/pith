@@ -4,7 +4,7 @@ import { Card, CardContent } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
 import { formatDate, truncateText } from "~/lib/utils";
 import { TEXT_LIMITS, ICON_SIZES } from "~/lib/constants";
-import type { InsightWithBook, Insight } from "../types";
+import type { InsightWithBook, Insight } from "~/lib/types/insight";
 import {
 	MessageSquare,
 	CircleHelp,
@@ -30,7 +30,7 @@ export function InsightCard({
 	noteMaxLength = TEXT_LIMITS.NOTE_MAX_LENGTH,
 }: InsightCardProps) {
 	return (
-		<Card className="w-full mb-4 border-blue-200 bg-white">
+		<Card className="border-blue-200 bg-white">
 			<CardContent className="pr-2 pl-2 pt-4 pb-4">
 				<View className="flex flex-row justify-between items-center pl-2 pr-2 gap-8">
 					<View className="flex flex-row items-center gap-2">

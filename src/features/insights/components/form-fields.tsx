@@ -33,7 +33,7 @@ export function TextField({
 	Icon,
 	keyboardType = "default",
 	returnKeyType = "next",
-	className = "mb-6",
+	className,
 	autoFocus = false,
 	onSubmitEditing,
 	textInputRef,
@@ -79,7 +79,7 @@ export function TextField({
 export function TextareaField({
 	label,
 	placeholder,
-	className = "mb-6",
+	className,
 }: TextareaFieldProps) {
 	const field = useFieldContext<string>();
 

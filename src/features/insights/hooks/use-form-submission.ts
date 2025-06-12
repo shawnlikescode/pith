@@ -1,5 +1,5 @@
-import { useBooks } from "./use-books";
-import { useInsights } from "./use-insights";
+import { useBooks } from "~/lib/hooks/use-books";
+import { useInsights } from "~/lib/hooks/use-insights";
 import { useKeyboard } from "~/lib/hooks/use-keyboard";
 import {
 	handleError,
@@ -11,10 +11,12 @@ import {
 	addInsightFormSchema,
 } from "../types/form-schema";
 
-export function useFormSubmission() {
+export function useFormSubmission(): {
+	submitForm: (values: AddInsightFormData) => Promise<any>;
+} {
 	const { dismissKeyboard } = useKeyboard();
 	const { findOrCreateBook } = useBooks();
-	const { saveEntry } = useInsights();
+	const { saveInsight } = useInsights();
 
 	async function submitForm(values: AddInsightFormData) {
 		try {
@@ -44,7 +46,7 @@ export function useFormSubmission() {
 			);
 
 			// Save the insight
-			const insight = await saveEntry({
+			const insight = await saveInsight({
 				bookId: book.id,
 				location: validatedData.pageNumber?.trim() || "Unknown",
 				...(validatedData.insightType === "quote"

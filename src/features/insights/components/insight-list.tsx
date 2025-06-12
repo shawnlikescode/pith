@@ -5,7 +5,11 @@ import { cn } from "~/lib/utils";
 import { PERFORMANCE } from "~/lib/constants";
 import { useFilteredInsights } from "../hooks/use-filtered-insights";
 import { InsightCard } from "./insight-card";
-import type { InsightWithBook, FlexibleCategory, FlexibleTag } from "../types";
+import type {
+	InsightWithBook,
+	FlexibleCategory,
+	FlexibleTag,
+} from "~/lib/types/insight";
 
 interface InsightsListProps {
 	limit?: number;
@@ -31,13 +35,15 @@ export function InsightsList({
 		});
 
 	const renderEntry = ({ item }: { item: InsightWithBook }) => (
-		<InsightCard insight={item} />
+		<View className="mb-4">
+			<InsightCard insight={item} />
+		</View>
 	);
 
 	const renderEmptyState = () => {
 		if (loading) {
 			return (
-				<View className="justify-center items-center p-4">
+				<View className="justify-center items-center">
 					<Text className="text-gray-600">Loading insights...</Text>
 				</View>
 			);
@@ -45,7 +51,7 @@ export function InsightsList({
 
 		if (error) {
 			return (
-				<View className="justify-center items-center p-4">
+				<View className="justify-center items-center">
 					<Text className="text-red-600">Error loading insights: {error}</Text>
 				</View>
 			);
@@ -53,7 +59,7 @@ export function InsightsList({
 
 		if (insights.length === 0) {
 			return (
-				<View className="justify-center items-center p-4">
+				<View className="justify-center items-center">
 					<Text className="text-xl font-semibold text-gray-800 mb-2">
 						No insights yet
 					</Text>
@@ -66,7 +72,7 @@ export function InsightsList({
 
 		if (filteredInsights.length === 0 && searchQuery.trim()) {
 			return (
-				<View className="justify-center items-center p-4">
+				<View className="justify-center items-center">
 					<Text className="text-xl font-semibold text-gray-800 mb-2">
 						No results found
 					</Text>
@@ -94,7 +100,7 @@ export function InsightsList({
 		<View className={cn(showHeader && "flex-1")}>
 			{showHeader && (
 				<View className="">
-					<Text className="text-2xl font-bold text-gray-800 mb-1">
+					<Text className="text-2xl font-bold text-gray-800">
 						Your Insights
 					</Text>
 					<Text className="text-gray-600">
@@ -112,7 +118,6 @@ export function InsightsList({
 
 			{/* Scrollable list */}
 			<FlatList
-				className="pl-4 pr-4"
 				data={displayedInsights}
 				renderItem={renderEntry}
 				keyExtractor={(item) => item.id}
