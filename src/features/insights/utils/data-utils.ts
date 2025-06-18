@@ -1,13 +1,10 @@
-import type {
-	InsightWithBook,
-	FlexibleCategory,
-	FlexibleTag,
-} from "~/lib/types/insight";
+import type { InsightWithBook } from "~/lib/types/insight";
+import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
 export interface FilterOptions {
-	searchQuery?: string;
-	categories?: FlexibleCategory[];
-	tags?: FlexibleTag[];
+	readonly searchQuery?: string;
+	readonly categories?: FlexibleCategory[];
+	readonly tags?: FlexibleTag[];
 }
 
 export const filterInsightsByQuery = (

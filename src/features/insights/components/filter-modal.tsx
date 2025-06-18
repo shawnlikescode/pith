@@ -5,11 +5,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
 import { X } from "~/lib/icons/icons";
-import { useInsightsWithBooks } from "../hooks/use-insights-with-books";
+import { useInsightsWithBooks } from "~/lib/hooks/use-insights-with-books";
 import { getUniqueCategories, getUniqueTags } from "../utils/data-utils";
 import { CategoryFilter } from "./category-filter";
 import { TagFilter } from "./tag-filter";
-import type { FlexibleCategory, FlexibleTag } from "~/lib/types/insight";
+import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
 export function FilterModal() {
 	const { insights } = useInsightsWithBooks();

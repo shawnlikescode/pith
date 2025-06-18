@@ -1,14 +1,14 @@
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import "~/global.css";
-import { useInsightsWithBooks } from "~/features/insights/hooks/use-insights-with-books";
+import { useInsightsWithBooks } from "~/lib/hooks/use-insights-with-books";
 import { InsightsList } from "~/features/insights/components/insight-list";
 import { SearchBar } from "~/features/insights/components/search-bar";
-import { FlexibleCategory, FlexibleTag } from "~/lib/types/insight";
+import { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
 export default function IndexScreen() {
-	const { insights, loading } = useInsightsWithBooks();
+	const { insights } = useInsightsWithBooks();
 	const params = useLocalSearchParams<{
 		searchQuery?: string;
 		selectedCategories?: string;
@@ -17,7 +17,7 @@ export default function IndexScreen() {
 
 	const searchQuery = params.searchQuery || "";
 
-	const selectedCategories: FlexibleCategory[] = (() => {
+	const selectedCategories: FlexibleCategory[] = React.useMemo(() => {
 		try {
 			return params.selectedCategories
 				? JSON.parse(params.selectedCategories)
@@ -25,24 +25,27 @@ export default function IndexScreen() {
 		} catch {
 			return [];
 		}
-	})();
+	}, [params.selectedCategories]);
 
-	const selectedTags: FlexibleTag[] = (() => {
+	const selectedTags: FlexibleTag[] = React.useMemo(() => {
 		try {
 			return params.selectedTags ? JSON.parse(params.selectedTags) : [];
 		} catch {
 			return [];
 		}
-	})();
+	}, [params.selectedTags]);
 
-	const hasActiveFilters =
-		selectedCategories.length > 0 ||
-		selectedTags.length > 0 ||
-		searchQuery.trim().length > 0;
+	const hasActiveFilters = React.useMemo(
+		() =>
+			selectedCategories.length > 0 ||
+			selectedTags.length > 0 ||
+			searchQuery.trim().length > 0,
+		[selectedCategories.length, selectedTags.length, searchQuery]
+	);
 
-	function handleSearchChange(text: string): void {
+	const handleSearchChange = React.useCallback((text: string): void => {
 		router.setParams({ searchQuery: text });
-	}
+	}, []);
 
 	return (
 		<View className="flex-1 bg-white p-4 gap-6">

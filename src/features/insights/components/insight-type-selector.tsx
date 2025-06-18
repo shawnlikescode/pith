@@ -1,20 +1,15 @@
 import React from "react";
 import { View } from "react-native";
-import {
-	MessageSquare,
-	Quote,
-	Lightbulb,
-	CircleHelp,
-	type LucideIcon,
-} from "~/lib/icons/icons";
+import { MessageSquare, Quote, Lightbulb, CircleHelp } from "~/lib/icons/icons";
+import type { LucideIcon } from "~/lib/icons/icons";
 import { useFieldContext } from "../hooks/form-context";
-import { type InsightType } from "../types/form-schema";
+import type { InsightType } from "../types/form-schema";
 import { CategoryButton } from "./ui/category-button";
 
 interface InsightTypeOption {
-	type: InsightType;
-	label: string;
-	Icon: LucideIcon;
+	readonly type: InsightType;
+	readonly label: string;
+	readonly Icon: LucideIcon;
 }
 
 const INSIGHT_TYPES: InsightTypeOption[] = [

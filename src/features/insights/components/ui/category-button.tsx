@@ -46,9 +46,9 @@ const categoryTextVariants = cva("text-base font-medium leading-none", {
 
 interface CategoryButtonProps
 	extends Omit<React.ComponentProps<typeof Button>, "children"> {
-	label: string;
-	Icon: LucideIcon;
-	isSelected: boolean;
+	readonly label: string;
+	readonly Icon: LucideIcon;
+	readonly isSelected: boolean;
 }
 
 export function CategoryButton({

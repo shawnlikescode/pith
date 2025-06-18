@@ -36,8 +36,8 @@ const tagTextVariants = cva("text-sm", {
 
 interface TagChipProps
 	extends Omit<React.ComponentProps<typeof Button>, "children" | "variant"> {
-	label: string;
-	variant?: "available" | "selected" | "removable";
+	readonly label: string;
+	readonly variant?: "available" | "selected" | "removable";
 }
 
 export function TagChip({

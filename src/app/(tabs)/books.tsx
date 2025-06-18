@@ -1,29 +1,15 @@
+import React from "react";
 import { ScrollView, View, Text } from "react-native";
-import { useBooksWithInsights } from "~/features/books/hooks/use-books-with-insights";
+import { useBooksWithInsights } from "~/lib/hooks/use-books-with-insights";
 import { BookCard } from "~/features/books/components/book-card";
 import { cn } from "~/lib/utils";
 
 /**
  * Books screen showing library of books with insight statistics
+ * Updated to use new Zustand store architecture
  */
 export default function BooksScreen() {
-	const { books, loading, error } = useBooksWithInsights();
-
-	if (loading) {
-		return (
-			<View className="flex-1 bg-white justify-center items-center">
-				<Text className="text-gray-700">Loading books...</Text>
-			</View>
-		);
-	}
-
-	if (error) {
-		return (
-			<View className="flex-1 bg-white justify-center items-center px-4">
-				<Text className="text-red-500 text-center">Error: {error}</Text>
-			</View>
-		);
-	}
+	const { books } = useBooksWithInsights();
 
 	if (books.length === 0) {
 		return (

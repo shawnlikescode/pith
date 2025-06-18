@@ -1,5 +1,6 @@
-import { useBooks } from "~/lib/hooks/use-books";
-import { useInsights } from "~/lib/hooks/use-insights";
+import { router } from "expo-router";
+import { useBooksActions } from "~/lib/stores/books-store";
+import { useBookInsightManager } from "~/lib/hooks/use-book-insight-manager";
 import { useKeyboard } from "~/lib/hooks/use-keyboard";
 import {
 	handleError,
@@ -10,13 +11,14 @@ import {
 	type AddInsightFormData,
 	addInsightFormSchema,
 } from "../types/form-schema";
+import type { Insight } from "~/lib/types/insight";
 
 export function useFormSubmission(): {
-	submitForm: (values: AddInsightFormData) => Promise<any>;
+	submitForm: (values: AddInsightFormData) => Promise<Insight | null>;
 } {
 	const { dismissKeyboard } = useKeyboard();
-	const { findOrCreateBook } = useBooks();
-	const { saveInsight } = useInsights();
+	const { findBookByTitleAndAuthor, createBook } = useBooksActions();
+	const { addInsight } = useBookInsightManager(); // New coordinated hook
 
 	async function submitForm(values: AddInsightFormData) {
 		try {
@@ -34,44 +36,46 @@ export function useFormSubmission(): {
 					"Validation Error",
 					"Please check your input and try again."
 				);
-				return;
+				return null;
 			}
 
 			const validatedData = validationResult.data;
 
-			// Find or create the book
-			const book = await findOrCreateBook(
-				validatedData.source.trim(),
-				validatedData.author?.trim() || "Unknown"
-			);
+			// 1. Find or create book using atomic actions
+			const title = validatedData.source.trim();
+			const author = validatedData.author?.trim() || "Unknown";
 
-			// Save the insight
-			const insight = await saveInsight({
+			let book = findBookByTitleAndAuthor(title, author);
+			if (!book) {
+				book = await createBook(title, author);
+			}
+
+			// 2. Add insight with coordination
+			const insight = await addInsight({
 				bookId: book.id,
 				location: validatedData.pageNumber?.trim() || "Unknown",
-				...(validatedData.insightType === "quote"
-					? {
-							excerpt: validatedData.insight.trim(),
-					  }
-					: {
-							note: validatedData.insight.trim(),
-					  }),
 				category: validatedData.insightType,
 				tags: Array.from(
 					new Set(validatedData.tags.filter((tag) => tag.trim().length > 0))
 				),
+				...(validatedData.insightType === "quote"
+					? { excerpt: validatedData.insight.trim() }
+					: { note: validatedData.insight.trim() }),
 			});
 
-			showSuccessAlert("Success", "Your insight has been saved successfully!");
+			// Show success message
+			showSuccessAlert("Success", "Insight saved successfully");
+
+			// Navigate back
+			router.back();
+
 			return insight;
 		} catch (error) {
-			handleError(error, "Saving insight");
-			showErrorAlert("Error", "Failed to save insight. Please try again.");
-			throw error;
+			const appError = handleError(error, "Saving insight");
+			showErrorAlert("Error", appError.message);
+			return null;
 		}
 	}
 
-	return {
-		submitForm,
-	};
+	return { submitForm };
 }

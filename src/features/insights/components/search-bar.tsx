@@ -5,7 +5,8 @@ import { Input } from "~/components/ui/input";
 import { Search, Filter } from "~/lib/icons/icons";
 import { cn } from "~/lib/utils";
 import { ICON_SIZES } from "~/lib/constants";
-import type { FlexibleCategory, FlexibleTag } from "~/lib/types/insight";
+import { Text } from "~/components/ui/text";
+import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
 interface SearchBarProps {
 	searchQuery: string;

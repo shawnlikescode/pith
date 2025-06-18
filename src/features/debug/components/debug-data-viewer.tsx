@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View, ScrollView } from "react-native";
 import { storageAdapter } from "~/lib/storage";
 import { Text } from "~/components/ui/text";
-import { useBooks } from "~/lib/hooks/use-books";
-import { useInsights } from "~/lib/hooks/use-insights";
+import { useBooksMap } from "~/lib/stores/books-store";
+import { useInsightsMap } from "~/lib/stores/insights-store";
+import { useBooksActions } from "~/lib/stores/books-store";
+import { useInsightsActions } from "~/lib/stores/insights-store";
 import type { Book } from "~/lib/types/book";
 import type { Insight } from "~/lib/types/insight";
 import { Button } from "~/components/ui/button";
@@ -16,22 +18,19 @@ import {
 } from "~/components/ui/card";
 
 export function DebugDataViewer() {
-	const [books, setBooks] = useState<Book[]>([]);
-	const [insights, setInsights] = useState<Insight[]>([]);
+	const booksMap = useBooksMap();
+	const insightsMap = useInsightsMap();
+	const books = Array.from(booksMap.values());
+	const insights = Array.from(insightsMap.values());
+	const { loadBooks } = useBooksActions();
+	const { loadInsights } = useInsightsActions();
 	const [isLoading, setIsLoading] = useState(true);
 	const [lastLoaded, setLastLoaded] = useState<Date | null>(null);
-	const { getBooks } = useBooks();
-	const { getInsights } = useInsights();
 
 	async function loadData(): Promise<void> {
 		setIsLoading(true);
 		try {
-			const [booksData, insightsData] = await Promise.all([
-				getBooks(),
-				getInsights(),
-			]);
-			setBooks(booksData);
-			setInsights(insightsData);
+			await Promise.all([loadBooks(), loadInsights()]);
 			setLastLoaded(new Date());
 		} catch (error) {
 			console.error("Error loading data:", error);
@@ -159,11 +158,20 @@ export function DebugDataViewer() {
 													"{entry.excerpt}"
 												</Text>
 											)}
-										{"note" in entry && entry.note && (
-											<Text className="text-sm text-card-foreground mb-2">
-												{entry.note}
-											</Text>
-										)}
+										{entry.category === "quote" &&
+											"note" in entry &&
+											entry.note && (
+												<Text className="text-sm text-card-foreground mb-2">
+													Note: {entry.note}
+												</Text>
+											)}
+										{entry.category !== "quote" &&
+											"note" in entry &&
+											entry.note && (
+												<Text className="text-sm text-card-foreground mb-2">
+													{entry.note}
+												</Text>
+											)}
 										<Text className="text-xs text-muted-foreground">
 											ID: {entry.id}
 										</Text>

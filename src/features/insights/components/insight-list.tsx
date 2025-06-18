@@ -5,18 +5,15 @@ import { cn } from "~/lib/utils";
 import { PERFORMANCE } from "~/lib/constants";
 import { useFilteredInsights } from "../hooks/use-filtered-insights";
 import { InsightCard } from "./insight-card";
-import type {
-	InsightWithBook,
-	FlexibleCategory,
-	FlexibleTag,
-} from "~/lib/types/insight";
+import type { InsightWithBook } from "~/lib/types/insight";
+import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
 interface InsightsListProps {
-	limit?: number;
-	showHeader?: boolean;
-	searchQuery?: string;
-	categories?: FlexibleCategory[];
-	tags?: FlexibleTag[];
+	readonly limit?: number;
+	readonly showHeader?: boolean;
+	readonly searchQuery?: string;
+	readonly categories?: FlexibleCategory[];
+	readonly tags?: FlexibleTag[];
 }
 
 export function InsightsList({
@@ -26,13 +23,14 @@ export function InsightsList({
 	categories = [],
 	tags = [],
 }: InsightsListProps) {
-	const { insights, filteredInsights, displayedInsights, loading, error } =
-		useFilteredInsights({
+	const { insights, filteredInsights, displayedInsights } = useFilteredInsights(
+		{
 			searchQuery,
 			categories,
 			tags,
 			limit,
-		});
+		}
+	);
 
 	const renderEntry = ({ item }: { item: InsightWithBook }) => (
 		<View className="mb-4">
@@ -41,22 +39,6 @@ export function InsightsList({
 	);
 
 	const renderEmptyState = () => {
-		if (loading) {
-			return (
-				<View className="justify-center items-center">
-					<Text className="text-gray-600">Loading insights...</Text>
-				</View>
-			);
-		}
-
-		if (error) {
-			return (
-				<View className="justify-center items-center">
-					<Text className="text-red-600">Error loading insights: {error}</Text>
-				</View>
-			);
-		}
-
 		if (insights.length === 0) {
 			return (
 				<View className="justify-center items-center">
@@ -88,8 +70,6 @@ export function InsightsList({
 
 	// Handle empty states
 	if (
-		loading ||
-		error ||
 		insights.length === 0 ||
 		(filteredInsights.length === 0 && searchQuery.trim())
 	) {

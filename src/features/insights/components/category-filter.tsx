@@ -1,19 +1,15 @@
 import React from "react";
 import { View } from "react-native";
-import {
-	MessageSquare,
-	Quote,
-	Lightbulb,
-	CircleHelp,
-	type LucideIcon,
-} from "~/lib/icons/icons";
-import type { FlexibleCategory } from "../types";
+import { MessageSquare, Quote, Lightbulb, CircleHelp } from "~/lib/icons/icons";
+import type { LucideIcon } from "~/lib/icons/icons";
+import type { FlexibleCategory } from "~/lib/types";
 import { CategoryButton } from "./ui/category-button";
+import { Text } from "~/components/ui/text";
 
 interface CategoryOption {
-	category: FlexibleCategory;
-	label: string;
-	Icon: LucideIcon;
+	readonly category: FlexibleCategory;
+	readonly label: string;
+	readonly Icon: LucideIcon;
 }
 
 const CATEGORY_OPTIONS: CategoryOption[] = [
@@ -24,9 +20,9 @@ const CATEGORY_OPTIONS: CategoryOption[] = [
 ];
 
 interface CategoryFilterProps {
-	availableCategories: FlexibleCategory[];
-	selectedCategories: FlexibleCategory[];
-	onCategoryToggle: (category: FlexibleCategory) => void;
+	readonly availableCategories: FlexibleCategory[];
+	readonly selectedCategories: FlexibleCategory[];
+	readonly onCategoryToggle: (category: FlexibleCategory) => void;
 }
 
 export function CategoryFilter({

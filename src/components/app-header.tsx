@@ -3,6 +3,8 @@ import { View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { BookOpen } from "~/lib/icons/icons";
 import { ICON_SIZES } from "~/lib/constants";
+import { Button } from "./ui/button";
+import { Link } from "expo-router";
 
 interface AppHeaderProps {
 	subtitle?: string;
@@ -25,6 +27,13 @@ export const AppHeader = ({ subtitle }: AppHeaderProps) => {
 							<Text className="text-gray-600 text-sm">{subtitle}</Text>
 						)}
 					</View>
+					{/* <View className="bg-black p-1 rounded-md">
+						<Link href="/dedug" asChild>
+							<Button>
+								<Text className="text-white">Debug</Text>
+							</Button>
+						</Link>
+					</View> */}
 				</View>
 			</View>
 		</View>

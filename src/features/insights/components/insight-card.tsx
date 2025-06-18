@@ -1,10 +1,11 @@
 import React from "react";
 import { View } from "react-native";
-import { Card, CardContent } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
+import { Card, CardContent } from "~/components/ui/card";
 import { formatDate, truncateText } from "~/lib/utils";
 import { TEXT_LIMITS, ICON_SIZES } from "~/lib/constants";
-import type { InsightWithBook, Insight } from "~/lib/types/insight";
+import type { Insight } from "~/lib/types/insight";
+import type { InsightWithBook } from "~/lib/types/insight";
 import {
 	MessageSquare,
 	CircleHelp,
@@ -19,9 +20,9 @@ import {
 } from "~/lib/icons/icons";
 
 interface InsightCardProps {
-	insight: InsightWithBook;
-	passageMaxLength?: number;
-	noteMaxLength?: number;
+	readonly insight: InsightWithBook;
+	readonly passageMaxLength?: number;
+	readonly noteMaxLength?: number;
 }
 
 export function InsightCard({
@@ -30,7 +31,7 @@ export function InsightCard({
 	noteMaxLength = TEXT_LIMITS.NOTE_MAX_LENGTH,
 }: InsightCardProps) {
 	return (
-		<Card className="border-blue-200 bg-white">
+		<Card className="border-blue-200 bg-background">
 			<CardContent className="pr-2 pl-2 pt-4 pb-4">
 				<View className="flex flex-row justify-between items-center pl-2 pr-2 gap-8">
 					<View className="flex flex-row items-center gap-2">
@@ -57,7 +58,7 @@ export function InsightCard({
 					<Text className="text-sm text-gray-700 leading-4 p-2">
 						{insight.category === "quote"
 							? truncateText(`"${insight.excerpt}"`, noteMaxLength)
-							: truncateText(insight.note ?? "", noteMaxLength)}
+							: truncateText(insight.note, noteMaxLength)}
 					</Text>
 				</View>
 				<View className="flex flex-row gap-4 mt-1 pl-2">
@@ -73,16 +74,18 @@ export function InsightCard({
 							{insight.book.author}
 						</Text>
 					</View>
-					<View className="flex flex-row gap-2">
-						<LocateFixed className="text-gray-700" size={ICON_SIZES.SMALL} />
-						<Text className="text-xs text-gray-700 font-medium leading-3">
-							p. {insight.location}
-						</Text>
-					</View>
+					{insight.location && (
+						<View className="flex flex-row gap-2">
+							<LocateFixed className="text-gray-700" size={ICON_SIZES.SMALL} />
+							<Text className="text-xs text-gray-700 font-medium leading-3">
+								p. {insight.location}
+							</Text>
+						</View>
+					)}
 				</View>
 				<View className="flex flex-row gap-2 mt-6 items-center pl-2">
 					<Hash className="text-blue-500" size={ICON_SIZES.SMALL} />
-					{insight.tags.map((tag, index) => (
+					{insight.tags.map((tag: string, index: number) => (
 						<Text
 							key={index}
 							className="text-blue-500 font-normal text-xs leading-none"

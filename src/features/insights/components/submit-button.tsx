@@ -5,9 +5,9 @@ import { useFormContext } from "../hooks/form-context";
 import { Button } from "~/components/ui/button";
 
 interface SubmitButtonProps {
-	label: string;
-	loadingLabel?: string;
-	className?: string;
+	readonly label: string;
+	readonly loadingLabel?: string;
+	readonly className?: string;
 }
 
 export function SubmitButton({

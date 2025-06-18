@@ -1,5 +1,6 @@
 import React from "react";
-import { View, type TextInput } from "react-native";
+import { View } from "react-native";
+import type { TextInput } from "react-native";
 import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
@@ -9,22 +10,22 @@ import { ICON_SIZES } from "~/lib/constants";
 import type { LucideIcon } from "lucide-react-native";
 
 interface BaseFieldProps {
-	label: string;
-	className?: string;
+	readonly label: string;
+	readonly className?: string;
 }
 
 interface TextFieldProps extends BaseFieldProps {
-	placeholder: string;
-	Icon?: LucideIcon;
-	keyboardType?: "default" | "numeric";
-	returnKeyType?: "next" | "done";
-	autoFocus?: boolean;
-	onSubmitEditing?: () => void;
-	textInputRef?: React.RefObject<TextInput>;
+	readonly placeholder: string;
+	readonly Icon?: LucideIcon;
+	readonly keyboardType?: "default" | "numeric";
+	readonly returnKeyType?: "next" | "done";
+	readonly autoFocus?: boolean;
+	readonly onSubmitEditing?: () => void;
+	readonly textInputRef?: React.RefObject<TextInput>;
 }
 
 interface TextareaFieldProps extends BaseFieldProps {
-	placeholder: string;
+	readonly placeholder: string;
 }
 
 export function TextField({

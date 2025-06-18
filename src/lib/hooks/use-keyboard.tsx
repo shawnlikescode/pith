@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { Keyboard, type KeyboardEvent } from "react-native";
 
 const EVENT_TYPE = {

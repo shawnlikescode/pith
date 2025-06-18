@@ -1,13 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 import { Text } from "~/components/ui/text";
-import type { FlexibleTag } from "../types";
+import type { FlexibleTag } from "~/lib/types";
 import { TagChip } from "./ui/tag-chip";
 
 interface TagFilterProps {
-	availableTags: FlexibleTag[];
-	selectedTags: FlexibleTag[];
-	onTagToggle: (tag: FlexibleTag) => void;
+	readonly availableTags: FlexibleTag[];
+	readonly selectedTags: FlexibleTag[];
+	readonly onTagToggle: (tag: FlexibleTag) => void;
 }
 
 export function TagFilter({

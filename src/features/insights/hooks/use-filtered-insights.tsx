@@ -1,30 +1,24 @@
 import { useMemo } from "react";
-import { useInsightsWithBooks } from "./use-insights-with-books";
+import { useInsightsWithBooks } from "~/lib/hooks/use-insights-with-books";
 import {
 	filterInsights,
 	limitInsights,
 	type FilterOptions,
 } from "../utils/data-utils";
-import type {
-	InsightWithBook,
-	FlexibleCategory,
-	FlexibleTag,
-} from "~/lib/types/insight";
+import type { InsightWithBook } from "~/lib/types/insight";
+import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
 interface UseFilteredInsightsProps {
-	searchQuery?: string;
-	categories?: FlexibleCategory[];
-	tags?: FlexibleTag[];
-	limit?: number;
+	readonly searchQuery?: string;
+	readonly categories?: FlexibleCategory[];
+	readonly tags?: FlexibleTag[];
+	readonly limit?: number;
 }
 
 interface UseFilteredInsightsResult {
-	insights: InsightWithBook[];
-	filteredInsights: InsightWithBook[];
-	displayedInsights: InsightWithBook[];
-	loading: boolean;
-	error: string | null;
-	refetch: () => Promise<void>;
+	readonly insights: InsightWithBook[];
+	readonly filteredInsights: InsightWithBook[];
+	readonly displayedInsights: InsightWithBook[];
 }
 
 export function useFilteredInsights({
@@ -33,7 +27,7 @@ export function useFilteredInsights({
 	tags = [],
 	limit,
 }: UseFilteredInsightsProps = {}): UseFilteredInsightsResult {
-	const { insights, loading, error, refetch } = useInsightsWithBooks();
+	const { insights } = useInsightsWithBooks();
 
 	const filteredInsights = useMemo(() => {
 		return filterInsights(insights, {
@@ -51,8 +45,5 @@ export function useFilteredInsights({
 		insights,
 		filteredInsights,
 		displayedInsights,
-		loading,
-		error,
-		refetch,
 	};
 }
