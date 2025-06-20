@@ -1,57 +1,40 @@
 import React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { Button } from "~/components/ui/button";
+import { TouchableOpacity } from "react-native";
 import { Text } from "~/components/ui/text";
 import { X } from "~/lib/icons/icons";
 import { cn } from "~/lib/utils";
 
-const tagChipVariants = cva(
-	"flex-row items-center rounded-md pt-1 pb-1 border",
-	{
-		variants: {
-			variant: {
-				available: "bg-white border-gray-300 pl-3 pr-3",
-				selected: "bg-blue-100 border-blue-400 pl-3 pr-3",
-				removable: "bg-blue-100 border-blue-400 pl-3 pr-2",
-			},
-		},
-		defaultVariants: {
-			variant: "available",
-		},
-	}
-);
+type TagChipVariant = "available" | "selected" | "removable";
 
-const tagTextVariants = cva("text-sm", {
-	variants: {
-		variant: {
-			available: "text-gray-700",
-			selected: "text-blue-700",
-			removable: "text-blue-700 mr-2",
-		},
-	},
-	defaultVariants: {
-		variant: "available",
-	},
-});
-
-interface TagChipProps
-	extends Omit<React.ComponentProps<typeof Button>, "children" | "variant"> {
+interface TagChipProps {
 	readonly label: string;
-	readonly variant?: "available" | "selected" | "removable";
+	readonly variant: TagChipVariant;
+	readonly onPress?: () => void;
 }
 
-export function TagChip({
-	label,
-	variant = "available",
-	className,
-	...props
-}: TagChipProps) {
+const chipStyles = {
+	available: "bg-background border-border px-3",
+	selected: "bg-primary/10 border-primary px-3",
+	removable: "bg-primary/10 border-primary pl-3 pr-2",
+};
+
+const textStyles = {
+	available: "text-foreground",
+	selected: "text-primary",
+	removable: "text-primary mr-2",
+};
+
+export function TagChip({ label, variant, onPress }: TagChipProps) {
 	return (
-		<Button className={cn(tagChipVariants({ variant }), className)} {...props}>
-			<Text className={tagTextVariants({ variant })} style={{ lineHeight: 14 }}>
-				{label}
-			</Text>
-			{variant === "removable" && <X className="text-blue-700" size={14} />}
-		</Button>
+		<TouchableOpacity
+			className={cn(
+				"flex-row items-center rounded-full border py-1",
+				chipStyles[variant]
+			)}
+			onPress={onPress}
+		>
+			<Text className={cn("text-sm", textStyles[variant])}>{label}</Text>
+			{variant === "removable" && <X className="text-primary" size={14} />}
+		</TouchableOpacity>
 	);
 }

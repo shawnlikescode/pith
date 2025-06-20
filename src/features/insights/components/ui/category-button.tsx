@@ -1,72 +1,45 @@
 import React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { Button } from "~/components/ui/button";
+import { TouchableOpacity } from "react-native";
 import { Text } from "~/components/ui/text";
 import { cn } from "~/lib/utils";
 import type { LucideIcon } from "~/lib/icons/icons";
+import { ICON_SIZES } from "~/lib/constants";
 
-const categoryButtonVariants = cva(
-	"flex-1 flex-row items-center justify-center rounded-lg border gap-2 pt-3 pb-3",
-	{
-		variants: {
-			variant: {
-				default: "border-0 bg-white",
-				selected: "border-blue-500 bg-blue-100",
-			},
-		},
-		defaultVariants: {
-			variant: "default",
-		},
-	}
-);
-
-const categoryIconVariants = cva("flex-shrink-0", {
-	variants: {
-		variant: {
-			default: "text-gray-500",
-			selected: "text-blue-700",
-		},
-	},
-	defaultVariants: {
-		variant: "default",
-	},
-});
-
-const categoryTextVariants = cva("text-base font-medium leading-none", {
-	variants: {
-		variant: {
-			default: "text-gray-700",
-			selected: "text-blue-700",
-		},
-	},
-	defaultVariants: {
-		variant: "default",
-	},
-});
-
-interface CategoryButtonProps
-	extends Omit<React.ComponentProps<typeof Button>, "children"> {
+interface CategoryButtonProps {
 	readonly label: string;
 	readonly Icon: LucideIcon;
 	readonly isSelected: boolean;
+	readonly onPress: () => void;
 }
 
 export function CategoryButton({
 	label,
 	Icon,
 	isSelected,
-	className,
-	...props
+	onPress,
 }: CategoryButtonProps) {
-	const variant = isSelected ? "selected" : "default";
-
 	return (
-		<Button
-			className={cn(categoryButtonVariants({ variant }), className)}
-			{...props}
+		<TouchableOpacity
+			className={cn(
+				"flex-1 flex-row items-center justify-center gap-2 px-4 py-3 rounded-2xl border-2",
+				isSelected
+					? "bg-primary/10 border-primary"
+					: "bg-background border-border"
+			)}
+			onPress={onPress}
 		>
-			<Icon size={16} className={categoryIconVariants({ variant })} />
-			<Text className={categoryTextVariants({ variant })}>{label}</Text>
-		</Button>
+			<Icon
+				size={ICON_SIZES.MEDIUM}
+				className={cn(isSelected ? "text-primary" : "text-muted-foreground")}
+			/>
+			<Text
+				className={cn(
+					"text-sm font-medium",
+					isSelected ? "text-primary" : "text-foreground"
+				)}
+			>
+				{label}
+			</Text>
+		</TouchableOpacity>
 	);
 }
