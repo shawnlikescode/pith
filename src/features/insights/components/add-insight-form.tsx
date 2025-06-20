@@ -66,6 +66,18 @@ export function AddInsightForm() {
 								</Label>
 								<form.Field
 									name="insightType"
+									validators={{
+										onChange: ({ value }) => {
+											if (
+												!["thought", "quote", "idea", "question"].includes(
+													value
+												)
+											) {
+												return "Please select a valid insight type";
+											}
+											return undefined;
+										},
+									}}
 									children={(field) => (
 										<fieldContext.Provider value={field}>
 											<InsightTypeSelector />
@@ -81,6 +93,16 @@ export function AddInsightForm() {
 									children={(insightType) => (
 										<form.Field
 											name="insight"
+											validators={{
+												onChange: ({ value }) => {
+													if (!value || value.trim().length === 0) {
+														return insightType === "quote"
+															? "Quote text is required"
+															: "Insight is required";
+													}
+													return undefined;
+												},
+											}}
 											children={(field) => (
 												<fieldContext.Provider value={field}>
 													<TextareaField
@@ -106,6 +128,14 @@ export function AddInsightForm() {
 							<View className="flex-row gap-4">
 								<form.Field
 									name="source"
+									validators={{
+										onChange: ({ value }) => {
+											if (!value || value.trim().length === 0) {
+												return "Source is required";
+											}
+											return undefined;
+										},
+									}}
 									children={(field) => (
 										<fieldContext.Provider value={field}>
 											<View className="flex-1">
@@ -124,6 +154,14 @@ export function AddInsightForm() {
 
 								<form.Field
 									name="pageNumber"
+									validators={{
+										onChange: ({ value }) => {
+											if (!value || value.trim().length === 0) {
+												return "Page number is required";
+											}
+											return undefined;
+										},
+									}}
 									children={(field) => (
 										<fieldContext.Provider value={field}>
 											<View className="w-24">
@@ -145,6 +183,14 @@ export function AddInsightForm() {
 							<View>
 								<form.Field
 									name="author"
+									validators={{
+										onChange: ({ value }) => {
+											if (!value || value.trim().length === 0) {
+												return "Author is required";
+											}
+											return undefined;
+										},
+									}}
 									children={(field) => (
 										<fieldContext.Provider value={field}>
 											<TextField
@@ -167,6 +213,25 @@ export function AddInsightForm() {
 								</Label>
 								<form.Field
 									name="tags"
+									validators={{
+										onChange: ({ value }) => {
+											if (value.length > 5) {
+												return "Maximum 5 tags allowed";
+											}
+											for (const tag of value) {
+												if (
+													typeof tag !== "string" ||
+													tag.trim().length === 0
+												) {
+													return "All tags must be non-empty strings";
+												}
+												if (tag.length > 20) {
+													return "Tags must be 20 characters or less";
+												}
+											}
+											return undefined;
+										},
+									}}
 									children={(field) => (
 										<fieldContext.Provider value={field}>
 											<TagManager textInputRef={tagRef} />

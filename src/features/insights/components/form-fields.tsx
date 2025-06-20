@@ -4,6 +4,7 @@ import type { TextInput } from "react-native";
 import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import { Textarea } from "~/components/ui/textarea";
+import { Text } from "~/components/ui/text";
 import { useFieldContext } from "../hooks/form-context";
 import { cn } from "~/lib/utils";
 import { ICON_SIZES } from "~/lib/constants";
@@ -40,6 +41,7 @@ export function TextField({
 	textInputRef,
 }: TextFieldProps) {
 	const field = useFieldContext<string>();
+	const hasErrors = field.state.meta.errors.length > 0;
 
 	return (
 		<View className={className}>
@@ -63,7 +65,7 @@ export function TextField({
 					className={cn(
 						"text-base",
 						Icon ? "pl-10" : "",
-						field.state.meta.errors.length > 0 && "border-destructive"
+						hasErrors && "border-destructive"
 					)}
 					keyboardType={keyboardType}
 					returnKeyType={returnKeyType}
@@ -71,6 +73,16 @@ export function TextField({
 					onSubmitEditing={onSubmitEditing}
 				/>
 			</View>
+
+			{hasErrors && (
+				<View className="mt-1">
+					{field.state.meta.errors.map((error, index) => (
+						<Text key={index} className="text-xs text-destructive">
+							{error}
+						</Text>
+					))}
+				</View>
+			)}
 		</View>
 	);
 }
@@ -81,6 +93,7 @@ export function TextareaField({
 	className,
 }: TextareaFieldProps) {
 	const field = useFieldContext<string>();
+	const hasErrors = field.state.meta.errors.length > 0;
 
 	return (
 		<View className={className}>
@@ -96,9 +109,19 @@ export function TextareaField({
 				textAlignVertical="top"
 				className={cn(
 					"min-h-[100px] text-base",
-					field.state.meta.errors.length > 0 && "border-destructive"
+					hasErrors && "border-destructive"
 				)}
 			/>
+
+			{hasErrors && (
+				<View className="mt-1">
+					{field.state.meta.errors.map((error, index) => (
+						<Text key={index} className="text-xs text-destructive">
+							{error}
+						</Text>
+					))}
+				</View>
+			)}
 		</View>
 	);
 }

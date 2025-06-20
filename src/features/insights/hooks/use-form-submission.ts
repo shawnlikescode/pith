@@ -7,10 +7,7 @@ import {
 	showSuccessAlert,
 	showErrorAlert,
 } from "~/lib/error-handling";
-import {
-	type AddInsightFormData,
-	addInsightFormSchema,
-} from "../types/form-schema";
+import type { AddInsightFormData } from "../types/form-schema";
 import type { Insight } from "~/lib/types/insight";
 
 export function useFormSubmission(): {
@@ -18,28 +15,15 @@ export function useFormSubmission(): {
 } {
 	const { dismissKeyboard } = useKeyboard();
 	const { findBookByTitleAndAuthor, createBook } = useBooksActions();
-	const { addInsight } = useBookInsightManager(); // New coordinated hook
+	const { addInsight } = useBookInsightManager();
 
 	async function submitForm(values: AddInsightFormData) {
 		try {
 			// Dismiss keyboard first
 			dismissKeyboard();
 
-			// Validate with Zod schema
-			const validationResult = addInsightFormSchema.safeParse(values);
-			if (!validationResult.success) {
-				const errors = validationResult.error.errors
-					.map((err) => `${err.path.join(".")}: ${err.message}`)
-					.join("\n");
-				handleError(new Error(errors), "Form validation");
-				showErrorAlert(
-					"Validation Error",
-					"Please check your input and try again."
-				);
-				return null;
-			}
-
-			const validatedData = validationResult.data;
+			// Data is already validated by TanStack Form + Zod
+			const validatedData = values;
 
 			// 1. Find or create book using atomic actions
 			const title = validatedData.source.trim();

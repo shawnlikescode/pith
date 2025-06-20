@@ -2,6 +2,7 @@ import React from "react";
 import { View, TextInput } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { Text } from "~/components/ui/text";
 import { Hash, Plus } from "~/lib/icons/icons";
 import { useFieldContext } from "../hooks/form-context";
 import { cn } from "~/lib/utils";
@@ -15,6 +16,7 @@ interface TagManagerProps {
 export function TagManager({ textInputRef }: TagManagerProps) {
 	const field = useFieldContext<string[]>();
 	const [newTag, setNewTag] = React.useState("");
+	const hasErrors = field.state.meta.errors.length > 0;
 
 	function handleAddTag(): void {
 		const value = newTag.trim().toLowerCase();
@@ -57,10 +59,7 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 						placeholder={
 							isMaxTagsReached ? "Maximum 5 tags reached" : "Add a tag"
 						}
-						className={cn(
-							"text-base pl-10",
-							field.state.meta.errors.length > 0 && "border-destructive"
-						)}
+						className={cn("text-base pl-10", hasErrors && "border-destructive")}
 						returnKeyType="done"
 						onSubmitEditing={handleAddTag}
 						editable={!isMaxTagsReached}
@@ -81,6 +80,16 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 					/>
 				</Button>
 			</View>
+
+			{hasErrors && (
+				<View className="mb-2">
+					{field.state.meta.errors.map((error, index) => (
+						<Text key={index} className="text-xs text-destructive">
+							{error}
+						</Text>
+					))}
+				</View>
+			)}
 
 			<View className="min-h-[24px]">
 				{field.state.value.length > 0 && (
