@@ -1,112 +1,95 @@
 import React from "react";
-import { View, FlatList } from "react-native";
+import { FlatList, View } from "react-native";
 import { Text } from "~/components/ui/text";
-import { cn } from "~/lib/utils";
-import { PERFORMANCE } from "~/lib/constants";
-import { useFilteredInsights } from "../hooks/use-filtered-insights";
+import { Button } from "~/components/ui/button";
+import { router } from "expo-router";
 import { InsightCard } from "./insight-card";
+import { useInsightsWithBooks } from "~/lib/hooks/use-insights-with-books";
+import { useFilteredInsights } from "../hooks/use-filtered-insights";
+import { cn } from "~/lib/utils";
 import type { InsightWithBook } from "~/lib/types/insight";
-import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
-interface InsightsListProps {
+interface InsightListProps {
 	readonly limit?: number;
-	readonly showHeader?: boolean;
-	readonly searchQuery?: string;
-	readonly categories?: FlexibleCategory[];
-	readonly tags?: FlexibleTag[];
+	readonly showEmpty?: boolean;
+	readonly emptyMessage?: string;
+	readonly className?: string;
 }
 
-export function InsightsList({
+export function InsightList({
 	limit,
-	showHeader = true,
-	searchQuery = "",
-	categories = [],
-	tags = [],
-}: InsightsListProps) {
-	const { insights, filteredInsights, displayedInsights } = useFilteredInsights(
-		{
-			searchQuery,
-			categories,
-			tags,
-			limit,
+	showEmpty = true,
+	emptyMessage = "No insights found",
+	className,
+}: InsightListProps) {
+	const { insights } = useInsightsWithBooks();
+	const { filteredInsights, hasActiveFilters } = useFilteredInsights(insights);
+
+	// Apply limit if specified
+	const displayedInsights = React.useMemo(() => {
+		if (!Array.isArray(filteredInsights)) {
+			return [];
 		}
+		return limit ? filteredInsights.slice(0, limit) : filteredInsights;
+	}, [filteredInsights, limit]);
+
+	// Move hooks BEFORE any early returns to fix hooks rule violation
+	const renderItem = React.useCallback(
+		({ item }: { item: InsightWithBook }) => (
+			<InsightCard key={item.id} insight={item} />
+		),
+		[]
 	);
 
-	const renderEntry = ({ item }: { item: InsightWithBook }) => (
-		<View className="mb-4">
-			<InsightCard insight={item} />
-		</View>
+	const keyExtractor = React.useCallback(
+		(item: InsightWithBook) => String(item.id || ""),
+		[]
 	);
 
-	const renderEmptyState = () => {
-		if (insights.length === 0) {
-			return (
-				<View className="justify-center items-center">
-					<Text className="text-xl font-semibold text-gray-800 mb-2">
-						No insights yet
-					</Text>
-					<Text className="text-gray-600 text-center">
-						Start adding your first book note to see it here!
-					</Text>
-				</View>
-			);
-		}
+	const isEmpty =
+		!Array.isArray(displayedInsights) || displayedInsights.length === 0;
 
-		if (filteredInsights.length === 0 && searchQuery.trim()) {
-			return (
-				<View className="justify-center items-center">
-					<Text className="text-xl font-semibold text-gray-800 mb-2">
-						No results found
-					</Text>
-					<Text className="text-gray-600 text-center">
-						No insights match "{searchQuery}". Try a different search term.
-					</Text>
-				</View>
-			);
-		}
+	function handleClearFilters(): void {
+		router.setParams({
+			q: undefined,
+			categories: undefined,
+			tags: undefined,
+		});
+	}
 
-		return null;
-	};
+	if (isEmpty && showEmpty) {
+		const emptyStateMessage = hasActiveFilters
+			? "No insights match your filters"
+			: emptyMessage;
 
-	// Handle empty states
-	if (
-		insights.length === 0 ||
-		(filteredInsights.length === 0 && searchQuery.trim())
-	) {
-		return renderEmptyState();
+		return (
+			<View
+				className={cn("flex-1 justify-center items-center px-6", className)}
+			>
+				<Text className="text-muted-foreground text-center mb-4">
+					{emptyStateMessage}
+				</Text>
+				{hasActiveFilters && (
+					<Button
+						variant="outline"
+						onPress={handleClearFilters}
+						className="mt-2"
+					>
+						<Text className="text-foreground">Clear Filters</Text>
+					</Button>
+				)}
+			</View>
+		);
 	}
 
 	return (
-		<View className={cn(showHeader && "flex-1")}>
-			{showHeader && (
-				<View className="">
-					<Text className="text-2xl font-bold text-gray-800">
-						Your Insights
-					</Text>
-					<Text className="text-gray-600">
-						{searchQuery?.trim()
-							? `${displayedInsights.length} of ${insights.length} ${
-									insights.length === 1 ? "entry" : "insights"
-							  }`
-							: `${displayedInsights.length} ${
-									displayedInsights.length === 1 ? "entry" : "insights"
-							  }`}
-						{limit && " (recent)"}
-					</Text>
-				</View>
-			)}
-
-			{/* Scrollable list */}
-			<FlatList
-				data={displayedInsights}
-				renderItem={renderEntry}
-				keyExtractor={(item) => item.id}
-				showsVerticalScrollIndicator={false}
-				removeClippedSubviews={true}
-				maxToRenderPerBatch={PERFORMANCE.MAX_RENDER_PER_BATCH}
-				windowSize={PERFORMANCE.WINDOW_SIZE}
-				scrollEnabled={!limit} // Disable scrolling for recent insights (limited lists)
-			/>
-		</View>
+		<FlatList
+			data={displayedInsights}
+			renderItem={renderItem}
+			keyExtractor={keyExtractor}
+			className={className}
+			showsVerticalScrollIndicator={false}
+			contentContainerStyle={{ paddingBottom: 100 }}
+		/>
 	);
 }

@@ -1,74 +1,6 @@
 import type { InsightWithBook } from "~/lib/types/insight";
 import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
-export interface FilterOptions {
-	readonly searchQuery?: string;
-	readonly categories?: FlexibleCategory[];
-	readonly tags?: FlexibleTag[];
-}
-
-export const filterInsightsByQuery = (
-	insights: InsightWithBook[],
-	searchQuery: string
-): InsightWithBook[] => {
-	if (!searchQuery || !searchQuery.trim()) {
-		return insights;
-	}
-
-	const lowercaseQuery = searchQuery.toLowerCase().trim();
-
-	return insights.filter((entry) => {
-		const searchableContent = [
-			entry.book?.title || "",
-			entry.book?.author || "",
-			entry.location,
-			entry.excerpt,
-			entry.note,
-			...entry.tags,
-			entry.category,
-		]
-			.join(" ")
-			.toLowerCase();
-
-		return searchableContent.includes(lowercaseQuery);
-	});
-};
-
-export const filterInsights = (
-	insights: InsightWithBook[],
-	options: FilterOptions = {}
-): InsightWithBook[] => {
-	let filtered = insights;
-
-	// Apply search query filter
-	if (options.searchQuery?.trim()) {
-		filtered = filterInsightsByQuery(filtered, options.searchQuery);
-	}
-
-	// Apply category filter
-	if (options.categories && options.categories.length > 0) {
-		filtered = filtered.filter((insight) =>
-			options.categories!.includes(insight.category)
-		);
-	}
-
-	// Apply tag filter
-	if (options.tags && options.tags.length > 0) {
-		filtered = filtered.filter((insight) =>
-			options.tags!.some((tag) => insight.tags.includes(tag))
-		);
-	}
-
-	return filtered;
-};
-
-export const limitInsights = (
-	insights: InsightWithBook[],
-	limit?: number
-): InsightWithBook[] => {
-	return limit ? insights.slice(0, limit) : insights;
-};
-
 export const getUniqueCategories = (
 	insights: InsightWithBook[]
 ): FlexibleCategory[] => {
@@ -79,4 +11,45 @@ export const getUniqueCategories = (
 export const getUniqueTags = (insights: InsightWithBook[]): FlexibleTag[] => {
 	const allTags = insights.flatMap((insight) => insight.tags);
 	return [...new Set(allTags)];
+};
+
+export const filterInsightsBySearch = (
+	insights: InsightWithBook[],
+	searchQuery: string
+): InsightWithBook[] => {
+	if (!searchQuery.trim()) return insights;
+
+	const query = searchQuery.toLowerCase().trim();
+	return insights.filter((insight) => {
+		const searchText = [
+			insight.excerpt,
+			insight.note,
+			insight.book?.title,
+			insight.book?.author,
+		]
+			.filter((text) => typeof text === "string")
+			.join(" ")
+			.toLowerCase();
+
+		return searchText.includes(query);
+	});
+};
+
+export const filterInsightsByCategories = (
+	insights: InsightWithBook[],
+	categories: FlexibleCategory[]
+): InsightWithBook[] => {
+	if (categories.length === 0) return insights;
+	return insights.filter((insight) => categories.includes(insight.category));
+};
+
+export const filterInsightsByTags = (
+	insights: InsightWithBook[],
+	tags: FlexibleTag[]
+): InsightWithBook[] => {
+	if (tags.length === 0) return insights;
+	return insights.filter((insight) => {
+		const insightTags = insight.tags || [];
+		return tags.some((tag) => insightTags.includes(tag));
+	});
 };

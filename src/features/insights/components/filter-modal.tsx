@@ -13,31 +13,46 @@ import type { FlexibleCategory, FlexibleTag } from "~/lib/types";
 
 export function FilterModal() {
 	const { insights } = useInsightsWithBooks();
-	const params = useLocalSearchParams<{
-		searchQuery?: string;
-		selectedCategories?: string;
-		selectedTags?: string;
+	const { categories, tags } = useLocalSearchParams<{
+		categories?: string;
+		tags?: string;
 	}>();
+	console.log("🏷️ FILTER MODAL: Current URL params:", { categories, tags });
+
+	// Parse URL parameters
+	const selectedCategories: FlexibleCategory[] = React.useMemo(() => {
+		try {
+			return categories ? JSON.parse(categories) : [];
+		} catch {
+			return [];
+		}
+	}, [categories]);
+
+	const selectedTags: FlexibleTag[] = React.useMemo(() => {
+		try {
+			return tags ? JSON.parse(tags) : [];
+		} catch {
+			return [];
+		}
+	}, [tags]);
 
 	const availableCategories = getUniqueCategories(insights);
 	const availableTags = getUniqueTags(insights);
-
-	const searchQuery = params.searchQuery || "";
-	const selectedCategories: FlexibleCategory[] = params.selectedCategories
-		? JSON.parse(params.selectedCategories)
-		: [];
-	const selectedTags: FlexibleTag[] = params.selectedTags
-		? JSON.parse(params.selectedTags)
-		: [];
 
 	function handleCategoryToggle(category: FlexibleCategory): void {
 		const newCategories = selectedCategories.includes(category)
 			? selectedCategories.filter((c) => c !== category)
 			: [...selectedCategories, category];
 
-		// Update the URL params for this modal only (for UI state)
+		console.log("🏷️ FILTER MODAL: Category toggle:", {
+			category,
+			oldCategories: selectedCategories,
+			newCategories,
+		});
+
 		router.setParams({
-			selectedCategories: JSON.stringify(newCategories),
+			categories:
+				newCategories.length > 0 ? JSON.stringify(newCategories) : undefined,
 		});
 	}
 
@@ -46,63 +61,73 @@ export function FilterModal() {
 			? selectedTags.filter((t) => t !== tag)
 			: [...selectedTags, tag];
 
-		// Update the URL params for this modal only (for UI state)
+		console.log("🏷️ FILTER MODAL: Tag toggle:", {
+			tag,
+			oldTags: selectedTags,
+			newTags,
+		});
+
 		router.setParams({
-			selectedTags: JSON.stringify(newTags),
+			tags: newTags.length > 0 ? JSON.stringify(newTags) : undefined,
 		});
 	}
 
 	function handleClearAll(): void {
-		// Navigate back to main screen with cleared filters
-		router.replace({
-			pathname: "/(tabs)",
+		console.log("🏷️ FILTER MODAL: Clear all filters");
+
+		// Clear all filters and go back to main screen
+		router.push({
+			pathname: "/(tabs)/",
 			params: {
-				searchQuery: "",
-				selectedCategories: JSON.stringify([]),
-				selectedTags: JSON.stringify([]),
+				q: undefined,
+				categories: undefined,
+				tags: undefined,
 			},
 		});
 	}
 
-	function handleApplyFilters(): void {
-		// Navigate back to the main screen with the filter params
+	function handleClose(): void {
+		// Navigate to index screen with current filter parameters
+		const filterParams = {
+			...(categories && { categories }),
+			...(tags && { tags }),
+		};
+
+		console.log("🏷️ FILTER MODAL: Closing with filters:", filterParams);
+
 		router.replace({
-			pathname: "/(tabs)",
-			params: {
-				searchQuery,
-				selectedCategories: JSON.stringify(selectedCategories),
-				selectedTags: JSON.stringify(selectedTags),
-			},
+			pathname: "/",
+			params: filterParams,
 		});
 	}
+
+	const hasActiveFilters =
+		selectedCategories.length > 0 || selectedTags.length > 0;
+
+	console.log("🏷️ FILTER MODAL: Has active filters:", {
+		hasActiveFilters,
+		categoriesCount: selectedCategories.length,
+		tagsCount: selectedTags.length,
+	});
 
 	return (
-		<SafeAreaView className="flex-1 bg-white">
+		<SafeAreaView className="flex-1 bg-background">
 			{/* Header */}
-			<View className="flex-row items-center justify-between p-4 border-b border-blue-200">
-				<Text className="text-xl font-semibold">Filter</Text>
-				<Button
-					variant="ghost"
-					size="icon"
-					onPress={() =>
-						router.replace({
-							pathname: "/(tabs)",
-							params: {
-								searchQuery,
-								selectedCategories: JSON.stringify(selectedCategories),
-								selectedTags: JSON.stringify(selectedTags),
-							},
-						})
-					}
-				>
-					<X size={24} className="text-gray-600" />
+			<View className="flex-row items-center justify-between p-4 border-b border-border">
+				<Text className="text-xl font-semibold text-foreground">
+					Filter Insights
+				</Text>
+				<Button variant="ghost" size="icon" onPress={handleClose}>
+					<X size={24} className="text-muted-foreground" />
 				</Button>
 			</View>
 
 			<ScrollView className="flex-1 p-4" contentContainerStyle={{ gap: 32 }}>
 				{/* Category Section */}
 				<View>
-					<Text className="text-lg font-semibold mb-4">Category</Text>
+					<Text className="text-lg font-semibold mb-4 text-foreground">
+						Category
+					</Text>
 					<CategoryFilter
 						availableCategories={availableCategories}
 						selectedCategories={selectedCategories}
@@ -112,7 +137,9 @@ export function FilterModal() {
 
 				{/* Tags Section */}
 				<View>
-					<Text className="text-lg font-semibold mb-4">Tags</Text>
+					<Text className="text-lg font-semibold mb-4 text-foreground">
+						Tags
+					</Text>
 					<TagFilter
 						availableTags={availableTags}
 						selectedTags={selectedTags}
@@ -122,17 +149,18 @@ export function FilterModal() {
 			</ScrollView>
 
 			{/* Footer */}
-			<View className="p-4 border-t border-blue-200">
+			<View className="p-4 border-t border-border">
 				<View className="flex-row gap-3">
 					<Button
 						variant="outline"
 						onPress={handleClearAll}
-						className="flex-1 bg-transparent border-blue-200"
+						className="flex-1"
+						disabled={!hasActiveFilters}
 					>
-						<Text>Clear All</Text>
+						<Text className="text-foreground">Clear All</Text>
 					</Button>
-					<Button onPress={handleApplyFilters} className="flex-1">
-						<Text>Apply Filters</Text>
+					<Button onPress={handleClose} className="flex-1">
+						<Text className="text-primary-foreground">Done</Text>
 					</Button>
 				</View>
 			</View>
