@@ -38,6 +38,13 @@ Built with React Native and Expo because I wanted it to work on my phone. Using:
 - Lucide icons
 - Bun for package management
 
+## UI/UX Design
+
+The app's design focuses on simplicity and ease of use. The interface is designed to be clean and distraction-free, allowing users to quickly capture their thoughts without getting in the way of their reading experience.
+
+Design mockups and prototypes are available in Figma:
+[Pith - Knowledge Companion Design](https://www.figma.com/design/VS9X0yAVxQiWBF5rrakoVQ/Pith-Knowledge-Companion?node-id=0-1&t=qaDTyGsZiRloneUc-1)
+
 ## Running It
 
 If you want to run this yourself:
@@ -120,8 +127,6 @@ That's it. Nothing else.
 - [x] Test that it searches across all fields
 
 ### Step 6: Polish
-
-[Figma](https://www.figma.com/design/VS9X0yAVxQiWBF5rrakoVQ/Untitled?node-id=0-1&t=ZRczTMS1U9dmdl10-1)
 
 - [ ] Make it look good (clean UI, proper spacing, mobile-friendly)
 - [ ] Handle edge cases (empty fields, no insights yet, etc.)
