@@ -1,17 +1,15 @@
-import React from "react";
-import type { ErrorInfo, ReactNode } from "react";
+import React, { ErrorInfo, ReactNode } from "react";
 import { View } from "react-native";
-import { Text } from "~/components/ui/text";
-import { Button } from "~/components/ui/button";
+import { Text } from "./ui/text";
+import { Button } from "./ui/button";
 
 interface ErrorBoundaryState {
 	readonly hasError: boolean;
-	readonly error: Error | null;
+	readonly error?: Error;
 }
 
 interface ErrorBoundaryProps {
 	readonly children: ReactNode;
-	readonly fallback?: (error: Error, resetError: () => void) => ReactNode;
 }
 
 /**
@@ -23,46 +21,53 @@ export class ErrorBoundary extends React.Component<
 > {
 	constructor(props: ErrorBoundaryProps) {
 		super(props);
-		this.state = { hasError: false, error: null };
+		this.state = { hasError: false };
 	}
 
 	static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+		console.log("🔥 ErrorBoundary - Error caught:", error);
+		console.log("🔥 ErrorBoundary - Error type:", typeof error);
+		console.log("🔥 ErrorBoundary - Error is array?", Array.isArray(error));
 		return { hasError: true, error };
 	}
 
-	componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
-		console.error("Error Boundary caught an error:", error, errorInfo);
+	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+		console.error("Error caught by boundary:", error, errorInfo);
 	}
 
-	resetError = (): void => {
-		this.setState({ hasError: false, error: null });
-	};
+	render() {
+		if (this.state.hasError) {
+			// Safely convert error to string
+			const errorString = this.state.error
+				? typeof this.state.error === "string"
+					? this.state.error
+					: Array.isArray(this.state.error)
+					? this.state.error.join(", ")
+					: this.state.error.toString()
+				: "Unknown error";
 
-	render(): ReactNode {
-		if (this.state.hasError && this.state.error) {
-			if (this.props.fallback) {
-				return this.props.fallback(this.state.error, this.resetError);
-			}
+			console.log("🔥 ErrorBoundary - Rendering error string:", errorString);
+			console.log("🔥 ErrorBoundary - Error string type:", typeof errorString);
 
 			return (
-				<View className="flex-1 justify-center items-center p-6 bg-white">
+				<View className="flex-1 justify-center items-center p-6">
 					<Text className="text-xl font-semibold text-red-600 mb-4 text-center">
-						Something went wrong
+						Oops! Something went wrong
 					</Text>
 					<Text className="text-gray-600 text-center mb-6 leading-6">
-						An unexpected error occurred. You can try restarting the app or
-						contact support if this continues to happen.
+						We encountered an unexpected error. Please try refreshing the app.
 					</Text>
-					<Button onPress={this.resetError} className="min-w-32">
-						<Text>Try Again</Text>
+					<Button
+						onPress={() => this.setState({ hasError: false })}
+						className="mb-4"
+					>
+						<Text className="text-primary-foreground">Try Again</Text>
 					</Button>
-					{__DEV__ && (
-						<View className="mt-8 p-4 bg-gray-100 rounded-lg max-w-full">
-							<Text className="text-xs text-gray-700 font-mono">
-								{this.state.error.message}
-							</Text>
-						</View>
-					)}
+					<View className="mt-8 p-4 bg-gray-100 rounded-lg max-w-full">
+						<Text className="text-xs text-gray-700 font-mono">
+							{errorString}
+						</Text>
+					</View>
 				</View>
 			);
 		}

@@ -44,11 +44,11 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 	return (
 		<View>
 			{/* Tag Input */}
-			<View className="flex-row items-center mb-3 relative">
+			<View className="flex-row items-center mb-4 relative">
 				<View className="relative flex-1">
 					<Hash
 						size={ICON_SIZES.MEDIUM_LARGE}
-						className="absolute left-3 text-gray-500 z-10 top-1/2 -mt-[9px]"
+						className="absolute left-3 text-muted-foreground z-10 top-1/2 -mt-[9px]"
 					/>
 					<Input
 						ref={textInputRef}
@@ -58,8 +58,8 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 							isMaxTagsReached ? "Maximum 5 tags reached" : "Add a tag"
 						}
 						className={cn(
-							"text-base pl-10 bg-transparent border-blue-200 focus:border-blue-700",
-							field.state.meta.errors.length > 0 && "border-red-500"
+							"text-base pl-10",
+							field.state.meta.errors.length > 0 && "border-destructive"
 						)}
 						returnKeyType="done"
 						onSubmitEditing={handleAddTag}
@@ -68,11 +68,15 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 				</View>
 				<Button
 					onPress={handleAddTag}
-					className="absolute -right-1 bg-transparent mx-0 p-0"
+					className="absolute -right-1 bg-transparent p-2"
 					disabled={isMaxTagsReached || !newTag.trim()}
 				>
 					<Plus
-						className={isMaxTagsReached ? "text-gray-400" : "text-blue-700"}
+						className={cn(
+							isMaxTagsReached || !newTag.trim()
+								? "text-muted-foreground"
+								: "text-primary"
+						)}
 						size={ICON_SIZES.MEDIUM_LARGE}
 					/>
 				</Button>

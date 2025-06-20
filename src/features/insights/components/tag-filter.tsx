@@ -20,7 +20,7 @@ export function TagFilter({
 			{/* Available Tags */}
 			{availableTags.length > 0 && (
 				<View className="mb-4">
-					<Text className="text-sm font-medium text-gray-700 mb-2">
+					<Text className="text-sm font-medium text-muted-foreground mb-2">
 						Available Tags
 					</Text>
 					<View className="flex-row flex-wrap gap-2">
@@ -41,7 +41,7 @@ export function TagFilter({
 			{/* Selected Tags */}
 			{selectedTags.length > 0 && (
 				<View>
-					<Text className="text-sm font-medium text-gray-700 mb-2">
+					<Text className="text-sm font-medium text-muted-foreground mb-2">
 						Selected Tags
 					</Text>
 					<View className="flex-row flex-wrap gap-2">
@@ -59,8 +59,8 @@ export function TagFilter({
 
 			{/* Empty State */}
 			{availableTags.length === 0 && (
-				<View className="py-4">
-					<Text className="text-gray-500 text-center">
+				<View className="pt-4 pb-4">
+					<Text className="text-muted-foreground text-center">
 						No tags available in your insights
 					</Text>
 				</View>

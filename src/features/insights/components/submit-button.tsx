@@ -25,12 +25,12 @@ export function SubmitButton({
 					onPress={form.handleSubmit}
 					disabled={isSubmitting}
 					className={cn(
-						"rounded-md bg-blue-400",
-						isSubmitting ? "opacity-50" : "opacity-100",
+						"w-full rounded-xl bg-primary h-14",
+						isSubmitting && "opacity-50",
 						className
 					)}
 				>
-					<Text className="text-white text-center text-lg font-semibold">
+					<Text className="text-primary-foreground text-center text-lg font-semibold">
 						{isSubmitting ? loadingLabel : label}
 					</Text>
 				</Button>

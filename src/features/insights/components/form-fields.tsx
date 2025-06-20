@@ -43,17 +43,15 @@ export function TextField({
 
 	return (
 		<View className={className}>
-			<View className="flex flex-row justify-between">
-				<Label className="text-sm font-medium text-gray-900 mb-2">
-					{label}
-				</Label>
-			</View>
+			<Label className="text-sm font-medium text-foreground mb-2">
+				{label}
+			</Label>
 
 			<View className="relative">
 				{Icon && (
 					<Icon
 						size={ICON_SIZES.MEDIUM_LARGE}
-						className="absolute left-3 text-gray-500 z-10 top-1/2 -mt-[9px]"
+						className="absolute left-3 text-muted-foreground z-10 top-1/2 -mt-[9px]"
 					/>
 				)}
 				<Input
@@ -63,9 +61,9 @@ export function TextField({
 					onBlur={field.handleBlur}
 					placeholder={placeholder}
 					className={cn(
-						"text-base bg-transparent border-blue-200 focus:border-blue-700",
+						"text-base",
 						Icon ? "pl-10" : "",
-						field.state.meta.errors.length > 0 && "border-red-500"
+						field.state.meta.errors.length > 0 && "border-destructive"
 					)}
 					keyboardType={keyboardType}
 					returnKeyType={returnKeyType}
@@ -86,11 +84,9 @@ export function TextareaField({
 
 	return (
 		<View className={className}>
-			<View className="flex flex-row justify-between">
-				<Label className="text-sm font-medium text-gray-900 mb-2">
-					{label}
-				</Label>
-			</View>
+			<Label className="text-sm font-medium text-foreground mb-2">
+				{label}
+			</Label>
 
 			<Textarea
 				value={field.state.value}
@@ -99,8 +95,8 @@ export function TextareaField({
 				placeholder={placeholder}
 				textAlignVertical="top"
 				className={cn(
-					"min-h-[100px] text-base bg-transparent border-blue-200 focus:border-blue-700",
-					field.state.meta.errors.length > 0 && "border-red-500"
+					"min-h-[100px] text-base",
+					field.state.meta.errors.length > 0 && "border-destructive"
 				)}
 			/>
 		</View>
