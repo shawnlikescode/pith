@@ -17,7 +17,6 @@ export function FilterModal() {
 		categories?: string;
 		tags?: string;
 	}>();
-	console.log("🏷️ FILTER MODAL: Current URL params:", { categories, tags });
 
 	// Parse URL parameters
 	const selectedCategories: FlexibleCategory[] = React.useMemo(() => {
@@ -44,12 +43,6 @@ export function FilterModal() {
 			? selectedCategories.filter((c) => c !== category)
 			: [...selectedCategories, category];
 
-		console.log("🏷️ FILTER MODAL: Category toggle:", {
-			category,
-			oldCategories: selectedCategories,
-			newCategories,
-		});
-
 		router.setParams({
 			categories:
 				newCategories.length > 0 ? JSON.stringify(newCategories) : undefined,
@@ -61,20 +54,12 @@ export function FilterModal() {
 			? selectedTags.filter((t) => t !== tag)
 			: [...selectedTags, tag];
 
-		console.log("🏷️ FILTER MODAL: Tag toggle:", {
-			tag,
-			oldTags: selectedTags,
-			newTags,
-		});
-
 		router.setParams({
 			tags: newTags.length > 0 ? JSON.stringify(newTags) : undefined,
 		});
 	}
 
 	function handleClearAll(): void {
-		console.log("🏷️ FILTER MODAL: Clear all filters");
-
 		// Clear all filters and go back to main screen
 		router.push({
 			pathname: "/(tabs)/",
@@ -93,8 +78,6 @@ export function FilterModal() {
 			...(tags && { tags }),
 		};
 
-		console.log("🏷️ FILTER MODAL: Closing with filters:", filterParams);
-
 		router.replace({
 			pathname: "/",
 			params: filterParams,
@@ -103,12 +86,6 @@ export function FilterModal() {
 
 	const hasActiveFilters =
 		selectedCategories.length > 0 || selectedTags.length > 0;
-
-	console.log("🏷️ FILTER MODAL: Has active filters:", {
-		hasActiveFilters,
-		categoriesCount: selectedCategories.length,
-		tagsCount: selectedTags.length,
-	});
 
 	return (
 		<SafeAreaView className="flex-1 bg-background">

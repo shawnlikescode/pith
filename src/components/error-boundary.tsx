@@ -25,9 +25,6 @@ export class ErrorBoundary extends React.Component<
 	}
 
 	static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-		console.log("🔥 ErrorBoundary - Error caught:", error);
-		console.log("🔥 ErrorBoundary - Error type:", typeof error);
-		console.log("🔥 ErrorBoundary - Error is array?", Array.isArray(error));
 		return { hasError: true, error };
 	}
 
@@ -45,9 +42,6 @@ export class ErrorBoundary extends React.Component<
 					? this.state.error.join(", ")
 					: this.state.error.toString()
 				: "Unknown error";
-
-			console.log("🔥 ErrorBoundary - Rendering error string:", errorString);
-			console.log("🔥 ErrorBoundary - Error string type:", typeof errorString);
 
 			return (
 				<View className="flex-1 justify-center items-center p-6">

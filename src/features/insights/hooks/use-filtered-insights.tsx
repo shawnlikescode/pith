@@ -38,10 +38,8 @@ export function useFilteredInsights(
 				typeof categories === "string" && categories
 					? JSON.parse(categories)
 					: [];
-			console.log("🏷️ FILTER: Selected categories:", result);
 			return result;
 		} catch (error) {
-			console.log("❌ FILTER: Error parsing categories:", error);
 			return [];
 		}
 	}, [params.categories]);
@@ -55,10 +53,8 @@ export function useFilteredInsights(
 				return [];
 			}
 			const result = typeof tags === "string" && tags ? JSON.parse(tags) : [];
-			console.log("🏷️ FILTER: Selected tags:", result);
 			return result;
 		} catch (error) {
-			console.log("❌ FILTER: Error parsing tags:", error);
 			return [];
 		}
 	}, [params.tags]);
@@ -76,14 +72,6 @@ export function useFilteredInsights(
 	const filteredInsights = React.useMemo(() => {
 		if (!Array.isArray(insights)) {
 			return [];
-		}
-
-		if (selectedCategories.length > 0 || selectedTags.length > 0) {
-			console.log("🏷️ FILTER: Applying filters:", {
-				totalInsights: insights.length,
-				selectedCategories,
-				selectedTags,
-			});
 		}
 
 		const filtered = insights.filter((insight) => {
@@ -114,10 +102,6 @@ export function useFilteredInsights(
 			if (selectedCategories.length > 0) {
 				const matches = selectedCategories.includes(insight.category);
 				if (!matches) {
-					console.log("🏷️ FILTER: Category mismatch for insight:", {
-						insightCategory: insight.category,
-						selectedCategories,
-					});
 					return false;
 				}
 			}
@@ -129,23 +113,12 @@ export function useFilteredInsights(
 					insightTags.includes(tag)
 				);
 				if (!hasMatchingTag) {
-					console.log("🏷️ FILTER: Tag mismatch for insight:", {
-						insightTags,
-						selectedTags,
-					});
 					return false;
 				}
 			}
 
 			return true;
 		});
-
-		if (selectedCategories.length > 0 || selectedTags.length > 0) {
-			console.log("🏷️ FILTER: Results after filtering:", {
-				originalCount: insights.length,
-				filteredCount: filtered.length,
-			});
-		}
 
 		return filtered;
 	}, [insights, searchQuery, selectedCategories, selectedTags]);
