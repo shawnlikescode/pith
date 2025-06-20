@@ -1,8 +1,8 @@
 import React from "react";
-import { ScrollView, View, Text } from "react-native";
-import { useBooksWithInsights } from "~/lib/hooks/use-books-with-insights";
+import { View, FlatList } from "react-native";
+import { Text } from "~/components/ui/text";
 import { BookCard } from "~/features/books/components/book-card";
-import { cn } from "~/lib/utils";
+import { useBooksWithInsights } from "~/lib/hooks/use-books-with-insights";
 
 /**
  * Books screen showing library of books with insight statistics
@@ -13,29 +13,28 @@ export default function BooksScreen() {
 
 	if (books.length === 0) {
 		return (
-			<View className="flex-1 bg-white justify-center items-center px-4">
-				<Text className="text-gray-700 text-center text-base leading-6">
-					No books yet. Start by adding insights to create your first book.
+			<View className="flex-1 bg-background justify-center items-center pl-4 pr-4">
+				<Text className="text-muted-foreground text-center text-base leading-6">
+					No books with insights yet.{"\n"}Start adding insights to see your
+					books here!
 				</Text>
 			</View>
 		);
 	}
 
 	return (
-		<View className="flex-1 bg-white">
-			<ScrollView showsVerticalScrollIndicator={false} className="p-4">
-				{books.map((book, index) => (
-					<View
-						key={book.id}
-						className={cn(
-							"mb-4",
-							index < books.length - 1 ? "pb-4 border-b border-blue-200" : ""
-						)}
-					>
-						<BookCard book={book} />
+		<View className="flex-1 bg-background">
+			<FlatList
+				data={books}
+				keyExtractor={(item) => item.id}
+				renderItem={({ item }) => (
+					<View className="mb-4">
+						<BookCard book={item} insightCount={item.insights.length} />
 					</View>
-				))}
-			</ScrollView>
+				)}
+				contentContainerStyle={{ padding: 16 }}
+				showsVerticalScrollIndicator={false}
+			/>
 		</View>
 	);
 }
