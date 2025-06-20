@@ -89,7 +89,7 @@ export function InsightList({
 			keyExtractor={keyExtractor}
 			className={className}
 			showsVerticalScrollIndicator={false}
-			contentContainerStyle={{ paddingBottom: 100 }}
+			contentContainerStyle={{ paddingBottom: 100, gap: 16, paddingTop: 16 }}
 		/>
 	);
 }
