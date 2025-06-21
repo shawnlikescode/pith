@@ -37,14 +37,14 @@ export function useFormSubmission(): {
 			// 2. Add insight with coordination
 			const insight = await addInsight({
 				bookId: book.id,
-				location: validatedData.pageNumber?.trim() || "Unknown",
-				category: validatedData.insightType,
+				location: validatedData.location?.trim() || "Unknown",
+				category: validatedData.insightCategory,
 				tags: Array.from(
 					new Set(validatedData.tags.filter((tag) => tag.trim().length > 0))
 				),
-				...(validatedData.insightType === "quote"
-					? { excerpt: validatedData.insight.trim() }
-					: { note: validatedData.insight.trim() }),
+				...(validatedData.insightCategory === "quote"
+					? { excerpt: validatedData.excerpt.trim() }
+					: { note: validatedData.note.trim() }),
 			});
 
 			// Show success message

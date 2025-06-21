@@ -1,11 +1,11 @@
 import { Platform } from "react-native";
 
 export const FORM_LABELS = {
-	TYPE_OF_INSIGHT: "Type of Insight",
+	CATEGORY_OF_INSIGHT: "Category of Insight",
 	QUOTE: "Quote",
 	YOUR_INSIGHT: "Your Insight",
 	SOURCE: "Source",
-	PAGE_NUMBER: "Page #",
+	LOCATION: "Location",
 	AUTHOR: "Author",
 	TAGS: "Tags",
 	SAVE: "Save",
@@ -15,7 +15,7 @@ export const FORM_PLACEHOLDERS = {
 	QUOTE: "What excerpt from the source do you want to capture?",
 	INSIGHT: "What insight or thought do you want to capture?",
 	SOURCE: "Book title, article, etc.",
-	PAGE_NUMBER: "123",
+	LOCATION: "Page 12",
 	AUTHOR: "Author name",
 } as const;
 

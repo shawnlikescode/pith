@@ -10,7 +10,7 @@ import {
 import { SubmitButton } from "~/features/insights/components/submit-button";
 import { InsightTypeSelector } from "~/features/insights/components/insight-type-selector";
 import { TagManager } from "~/features/insights/components/tag-manager";
-import type { AddInsightFormData } from "../types/form-schema";
+import type { AddInsightFormData, InsightCategory } from "../types/form-schema";
 
 export const { useAppForm } = createFormHook({
 	fieldContext,
@@ -29,11 +29,12 @@ export const { useAppForm } = createFormHook({
 // Export default form options without Zod submit validation
 export const defaultFormOptions = {
 	defaultValues: {
-		insightType: "thought" as const,
-		insight: "",
+		insightCategory: "thought" as const,
+		excerpt: "",
+		note: "",
 		source: "",
 		author: "",
-		pageNumber: "",
-		tags: [],
+		location: "",
+		tags: [] as string[],
 	} satisfies AddInsightFormData,
 };

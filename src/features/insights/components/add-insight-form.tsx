@@ -62,10 +62,10 @@ export function AddInsightForm() {
 							{/* Type of Insight */}
 							<View>
 								<Label className="text-lg font-semibold text-foreground mb-4">
-									{FORM_LABELS.TYPE_OF_INSIGHT}
+									{FORM_LABELS.CATEGORY_OF_INSIGHT}
 								</Label>
 								<form.Field
-									name="insightType"
+									name="insightCategory"
 									validators={{
 										onChange: ({ value }) => {
 											if (
@@ -89,37 +89,51 @@ export function AddInsightForm() {
 							{/* Your Insight */}
 							<View>
 								<form.Subscribe
-									selector={(state) => state.values.insightType}
-									children={(insightType) => (
-										<form.Field
-											name="insight"
-											validators={{
-												onChange: ({ value }) => {
-													if (!value || value.trim().length === 0) {
-														return insightType === "quote"
-															? "Quote text is required"
-															: "Insight is required";
-													}
-													return undefined;
-												},
-											}}
-											children={(field) => (
-												<fieldContext.Provider value={field}>
-													<TextareaField
-														label={
-															insightType === "quote"
-																? FORM_LABELS.QUOTE
-																: FORM_LABELS.YOUR_INSIGHT
-														}
-														placeholder={
-															insightType === "quote"
-																? FORM_PLACEHOLDERS.QUOTE
-																: FORM_PLACEHOLDERS.INSIGHT
-														}
-													/>
-												</fieldContext.Provider>
+									selector={(state) => state.values.insightCategory}
+									children={(insightCategory) => (
+										<>
+											{(insightCategory as any) === "quote" ? (
+												<form.Field
+													name="excerpt"
+													validators={{
+														onChange: ({ value }) => {
+															if (!value || value.trim().length === 0) {
+																return "Quote text is required";
+															}
+															return undefined;
+														},
+													}}
+													children={(field) => (
+														<fieldContext.Provider value={field}>
+															<TextareaField
+																label={FORM_LABELS.QUOTE}
+																placeholder={FORM_PLACEHOLDERS.QUOTE}
+															/>
+														</fieldContext.Provider>
+													)}
+												/>
+											) : (
+												<form.Field
+													name="note"
+													validators={{
+														onChange: ({ value }) => {
+															if (!value || value.trim().length === 0) {
+																return "Insight is required";
+															}
+															return undefined;
+														},
+													}}
+													children={(field) => (
+														<fieldContext.Provider value={field}>
+															<TextareaField
+																label={FORM_LABELS.YOUR_INSIGHT}
+																placeholder={FORM_PLACEHOLDERS.INSIGHT}
+															/>
+														</fieldContext.Provider>
+													)}
+												/>
 											)}
-										/>
+										</>
 									)}
 								/>
 							</View>
@@ -153,11 +167,16 @@ export function AddInsightForm() {
 								/>
 
 								<form.Field
-									name="pageNumber"
+									name="location"
 									validators={{
 										onChange: ({ value }) => {
 											if (!value || value.trim().length === 0) {
 												return "Page number is required";
+											}
+											const trimmed = value.trim();
+											// Allow numbers, chapters, sections, etc.
+											if (trimmed.length > 50) {
+												return "Location must be 50 characters or less";
 											}
 											return undefined;
 										},
@@ -166,9 +185,9 @@ export function AddInsightForm() {
 										<fieldContext.Provider value={field}>
 											<View className="w-24">
 												<TextField
-													label={FORM_LABELS.PAGE_NUMBER}
-													placeholder={FORM_PLACEHOLDERS.PAGE_NUMBER}
-													keyboardType="numeric"
+													label={FORM_LABELS.LOCATION}
+													placeholder={FORM_PLACEHOLDERS.LOCATION}
+													keyboardType="default"
 													returnKeyType="next"
 													textInputRef={pageNumberRef}
 													onSubmitEditing={() => authorRef.current?.focus()}

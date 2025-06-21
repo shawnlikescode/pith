@@ -3,11 +3,11 @@ import { View } from "react-native";
 import { MessageSquare, Quote, Lightbulb, CircleHelp } from "~/lib/icons/icons";
 import type { LucideIcon } from "~/lib/icons/icons";
 import { useFieldContext } from "../hooks/form-context";
-import type { InsightType } from "../types/form-schema";
+import type { InsightCategory } from "../types/form-schema";
 import { CategoryButton } from "./ui/category-button";
 
 interface InsightTypeOption {
-	readonly type: InsightType;
+	readonly type: InsightCategory;
 	readonly label: string;
 	readonly Icon: LucideIcon;
 }
@@ -20,7 +20,7 @@ const INSIGHT_TYPES: InsightTypeOption[] = [
 ];
 
 export function InsightTypeSelector() {
-	const field = useFieldContext<InsightType>();
+	const field = useFieldContext<InsightCategory>();
 
 	return (
 		<View className="gap-3">

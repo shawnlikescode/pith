@@ -3,6 +3,7 @@ import { FlatList, View } from "react-native";
 import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
 import { router } from "expo-router";
+import { Plus, BookOpen } from "~/lib/icons/icons";
 import { InsightCard } from "./insight-card";
 import { useInsightsWithBooks } from "~/lib/hooks/use-insights-with-books";
 import { useFilteredInsights } from "../hooks/use-filtered-insights";
@@ -57,19 +58,20 @@ export function InsightList({
 		});
 	}
 
-	if (isEmpty && showEmpty) {
-		const emptyStateMessage = hasActiveFilters
-			? "No insights match your filters"
-			: emptyMessage;
+	function handleAddInsight(): void {
+		router.push("/add-insight");
+	}
 
-		return (
-			<View
-				className={cn("flex-1 justify-center items-center px-6", className)}
-			>
-				<Text className="text-muted-foreground text-center mb-4">
-					{emptyStateMessage}
-				</Text>
-				{hasActiveFilters && (
+	if (isEmpty && showEmpty) {
+		// Different empty states based on context
+		if (hasActiveFilters) {
+			return (
+				<View
+					className={cn("flex-1 justify-center items-center px-6", className)}
+				>
+					<Text className="text-muted-foreground text-center mb-4">
+						No insights match your current filters
+					</Text>
 					<Button
 						variant="outline"
 						onPress={handleClearFilters}
@@ -77,7 +79,44 @@ export function InsightList({
 					>
 						<Text className="text-foreground">Clear Filters</Text>
 					</Button>
-				)}
+				</View>
+			);
+		}
+
+		// Empty state for new users (no insights at all)
+		const isCompletelyEmpty = insights.length === 0;
+
+		if (isCompletelyEmpty) {
+			return (
+				<View
+					className={cn("flex-1 justify-center items-center px-6", className)}
+				>
+					<BookOpen className="w-16 h-16 text-muted-foreground mb-6" />
+					<Text className="text-xl font-semibold text-foreground mb-2 text-center">
+						Welcome to Pith!
+					</Text>
+					<Text className="text-muted-foreground text-center mb-6 leading-6">
+						Capture your thoughts and insights while reading.{"\n"}
+						Start by adding your first insight from a book.
+					</Text>
+					<Button onPress={handleAddInsight} className="flex-row items-center">
+						<Plus className="w-4 h-4 text-primary-foreground mr-2" />
+						<Text className="text-primary-foreground font-medium">
+							Add Your First Insight
+						</Text>
+					</Button>
+				</View>
+			);
+		}
+
+		// Default empty message for other cases
+		return (
+			<View
+				className={cn("flex-1 justify-center items-center px-6", className)}
+			>
+				<Text className="text-muted-foreground text-center mb-4">
+					{emptyMessage}
+				</Text>
 			</View>
 		);
 	}

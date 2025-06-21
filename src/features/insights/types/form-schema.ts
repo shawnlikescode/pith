@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const insightTypeSchema = z.enum([
+export const insightCategorySchema = z.enum([
 	"thought",
 	"quote",
 	"idea",
@@ -11,26 +11,35 @@ export const insightTypeSchema = z.enum([
 const baseFormSchema = z.object({
 	source: z.string().min(1, "Source is required"),
 	author: z.string().min(1, "Author is required"),
-	pageNumber: z.string().min(1, "Page number is required"),
+	location: z.string().min(1, "Location is required"),
 	tags: z.array(z.string().min(1).max(20)).max(5, "Maximum 5 tags allowed"),
 });
 
 // Discriminated union schema for different insight types
-export const addInsightFormSchema = z.discriminatedUnion("insightType", [
+export const addInsightFormSchema = z.discriminatedUnion("insightCategory", [
 	// Quote insights - the insight text becomes an excerpt
 	baseFormSchema.extend({
-		insightType: z.literal("quote"),
-		insight: z.string().min(1, "Quote text is required"),
+		insightCategory: z.literal("quote"),
+		excerpt: z.string().min(1, "Quote text is required"),
 	}),
 	// User insights (thought, idea, question) - the insight text becomes a note
 	baseFormSchema.extend({
-		insightType: z.enum(["thought", "idea", "question"]),
-		insight: z.string().min(1, "Insight is required"),
+		insightCategory: z.enum(["thought", "idea", "question"]),
+		note: z.string().min(1, "Insight is required"),
 	}),
 ]);
 
-export type AddInsightFormData = z.infer<typeof addInsightFormSchema>;
-export type InsightType = z.infer<typeof insightTypeSchema>;
+// Form data type with all possible fields for TanStack Form
+export type AddInsightFormData = {
+	insightCategory: "thought" | "quote" | "idea" | "question";
+	excerpt: string;
+	note: string;
+	source: string;
+	author: string;
+	location: string;
+	tags: string[];
+};
+export type InsightCategory = z.infer<typeof insightCategorySchema>;
 
 // Schema for the actual Insight data structure (matches our discriminated union)
 const baseInsightSchema = z.object({

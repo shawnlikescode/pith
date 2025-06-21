@@ -26,15 +26,24 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 			return;
 		}
 
+		// Check for empty tag
+		if (!value) {
+			return;
+		}
+
+		// Check for tag length
+		if (value.length > 20) {
+			return;
+		}
+
+		// Check for duplicate
 		if (field.state.value.includes(value)) {
 			setNewTag("");
 			return;
 		}
 
-		if (value) {
-			field.pushValue(value);
-			setNewTag("");
-		}
+		field.pushValue(value);
+		setNewTag("");
 	}
 
 	function handleRemoveTag(index: number): void {
@@ -42,6 +51,17 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 	}
 
 	const isMaxTagsReached = field.state.value.length >= 5;
+	const isDuplicate =
+		newTag.trim().toLowerCase() &&
+		field.state.value.includes(newTag.trim().toLowerCase());
+	const isTooLong = newTag.trim().length > 20;
+
+	const getPlaceholderText = (): string => {
+		if (isMaxTagsReached) return "Maximum 5 tags reached";
+		if (isDuplicate) return "Tag already exists";
+		if (isTooLong) return "Tag too long (max 20 chars)";
+		return "Add a tag";
+	};
 
 	return (
 		<View>
@@ -56,10 +76,11 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 						ref={textInputRef}
 						value={newTag}
 						onChangeText={setNewTag}
-						placeholder={
-							isMaxTagsReached ? "Maximum 5 tags reached" : "Add a tag"
-						}
-						className={cn("text-base pl-10", hasErrors && "border-destructive")}
+						placeholder={getPlaceholderText()}
+						className={cn(
+							"text-base pl-10",
+							(hasErrors || isDuplicate || isTooLong) && "border-destructive"
+						)}
 						returnKeyType="done"
 						onSubmitEditing={handleAddTag}
 						editable={!isMaxTagsReached}
@@ -68,11 +89,13 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 				<Button
 					onPress={handleAddTag}
 					className="absolute -right-1 bg-transparent p-2"
-					disabled={isMaxTagsReached || !newTag.trim()}
+					disabled={
+						isMaxTagsReached || !newTag.trim() || isDuplicate || isTooLong
+					}
 				>
 					<Plus
 						className={cn(
-							isMaxTagsReached || !newTag.trim()
+							isMaxTagsReached || !newTag.trim() || isDuplicate || isTooLong
 								? "text-muted-foreground"
 								: "text-primary"
 						)}
@@ -81,22 +104,35 @@ export function TagManager({ textInputRef }: TagManagerProps) {
 				</Button>
 			</View>
 
-			{hasErrors && (
+			{/* Validation Messages */}
+			{(hasErrors || isDuplicate || isTooLong) && (
 				<View className="mb-2">
-					{field.state.meta.errors.map((error, index) => (
-						<Text key={index} className="text-xs text-destructive">
-							{error}
+					{isDuplicate && (
+						<Text className="text-xs text-destructive">
+							This tag already exists
 						</Text>
-					))}
+					)}
+					{isTooLong && (
+						<Text className="text-xs text-destructive">
+							Tag must be 20 characters or less
+						</Text>
+					)}
+					{hasErrors &&
+						field.state.meta.errors.map((error, index) => (
+							<Text key={index} className="text-xs text-destructive">
+								{error}
+							</Text>
+						))}
 				</View>
 			)}
 
+			{/* Tag Display */}
 			<View className="min-h-[24px]">
 				{field.state.value.length > 0 && (
 					<View className="flex-row flex-wrap gap-2">
 						{field.state.value.map((tag, index) => (
 							<TagChip
-								key={`tag-${tag}-${field.state.value.length}`}
+								key={`tag-${tag}-${index}`}
 								label={tag}
 								variant="removable"
 								onPress={() => handleRemoveTag(index)}
